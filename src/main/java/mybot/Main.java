@@ -19,11 +19,7 @@ public class Main {
 	static String message;
 	static Messageable chan; 
 	static String pre;
-	static String plagueis;
-	static String sorry;
-	static String doctor;
-	static String kira;
-	static String pandemonika;
+	static String[] pastas = new String[5];
 	static MessageCreateEvent event;
 	
 	public static void main(String[] args) throws IOException {
@@ -31,11 +27,7 @@ public class Main {
 		for(int i = 0; i < 999; i++) space.append("\n");
 		space.append((char)8203);//spaces
 		for(int i = 0; i < 2000; i++) haram.append(((char)65021));//allah
-		plagueis = copy.readLine();
-		sorry = copy.readLine();
-		doctor = copy.readLine();
-		kira = copy.readLine();
-		pandemonika = copy.readLine();
+		for(int i = 0; i < pastas.length; i++)pastas[i] = copy.readLine();
 		
 		DiscordApi api = new DiscordApiBuilder().setToken(Token.readLine()).login().join();
 		System.out.println("Logged in!");
@@ -56,12 +48,13 @@ public class Main {
 		String[] cmd = eve.getMessageContent().split(" ");
 		chan = eve.getChannel();
 		pre = prefix(eve.getServer().get());
-		message = cmd[1];
+		if(cmd.length>1) message = cmd[1].toLowerCase();
 		event = eve;
 		switch(cmd[0].charAt(pre.length()+1)){
 		case 'p':paste();break;
 		case 'm':threading();break;
 		case 'c':changeprefix();break;
+		case 's':stop(chan);break;
 		}
 	}
 	static void paste(){
@@ -75,15 +68,15 @@ public class Main {
 		case "space" :
 			chan.sendMessage(space.toString()); break;
 		case "plagueis" :
-			chan.sendMessage(plagueis.toString()); break;
+			chan.sendMessage(pastas[0]); break;
 		case "sorry" :
-			chan.sendMessage(sorry.toString()); break;
+			chan.sendMessage(pastas[1]); break;
 		case "doctor" :
-			chan.sendMessage(doctor.toString()); break;
+			chan.sendMessage(pastas[2]); break;
 		case "kira" :
-			chan.sendMessage(kira.toString()); break;
+			chan.sendMessage(pastas[3]); break;
 		case "pandemonika" :
-			chan.sendMessage(pandemonika.toString()); break;
+			chan.sendMessage(pastas[4]); break;
 		case "help" :
 			break;
 		}
@@ -108,29 +101,38 @@ public class Main {
 		} catch (IOException e) {}
 		return re;
 	}
-	static void stop(Messageable chan) {//stops multithreading
-		if(threads.containsKey(chan)){
-			threads.get(chan).interrupt();
-			threads.remove(chan);
+	static void stop(Messageable stchan) {//stops multithreading
+		if(threads.containsKey(stchan)){
+			threads.get(stchan).interrupt();
+			threads.remove(stchan);
 		}
 	}
 	static void threading(){
 		stop(chan);
 		multithread.chan = chan;
-		if (message.contains(pre + "!mharam")) {//multithreaded haram
-			multithread.spam = haram.toString();
-		}
-		else if (message.contains(pre + "!minsult")) {//multithreaded insult (not working)
-			insultthread.chan = chan;
-			threads.put(chan, new insultthread());
-			threads.get(chan).start();
-			return;
-		}
-		else if (message.contains(pre + "!mspace")) {//multithreaded space
-			multithread.spam = space.toString();
-		}
-		else if (message.contains(pre + "!mping")) {//multithreaded pinging
-			multithread.spam = "@here\n";
+		switch(message) {
+		case "insult":
+			multithread.spam = insult(); break;//reddit database insulter
+		case "stop" :
+			stop(chan); break; //stop treads
+		case "haram" :
+			multithread.spam = haram.toString(); break;
+		case "space" :
+			multithread.spam = space.toString(); break;
+		case "plagueis" :
+			multithread.spam = pastas[0]; break;
+		case "sorry" :
+			multithread.spam = pastas[1]; break;
+		case "doctor" :
+			multithread.spam = pastas[2]; break;
+		case "kira" :
+			multithread.spam = pastas[3]; break;
+		case "pandemonika" :
+			multithread.spam = pastas[4]; break;
+		case "help" :
+			break;
+		case "ping" :
+			multithread.spam = "@everyone\n";
 		}
 		threads.put(chan, new multithread());
 		threads.get(chan).start();
@@ -149,21 +151,6 @@ class multithread extends Thread{
 		try {
 			while(true) {
 				ch.sendMessage(sp).join();
-				TimeUnit.SECONDS.sleep(1);		
-			}
-		} catch (InterruptedException e) {
-			ch.sendMessage("Spam Stopped");
-			return;
-		}
-	}
-}
-class insultthread extends Thread{//prob need java.nio to work
-	public static Messageable chan;
-	public void run() {
-		Messageable ch = chan;
-		try {
-			while(true) {
-				ch.sendMessage(Main.insult()).join();
 				TimeUnit.SECONDS.sleep(1);		
 			}
 		} catch (InterruptedException e) {
