@@ -29,11 +29,7 @@ public class Main {
 			if(message.contains(pre)) {
 				//boolean candelete = true; //candelete is for hiding commands
 				if (message.contains(pre + "!insult")) {//reddit database insulter
-					try {
-						chan.sendMessage(insult());
-					} catch (IOException e) {
-						chan.sendMessage("This is an IOException you dumb fuck");
-					}
+					chan.sendMessage(insult());
 				}
 				else if (message.contains(pre + "!haram")) {//long arabic character spammer
 					chan.sendMessage(al.toString());
@@ -45,29 +41,7 @@ public class Main {
 					stop(chan);
 				}
 				else if(message.contains(pre + "!run")) {
-					multithread th = new multithread();
-					th.chan = chan;
-					if(threads.containsKey(chan)){
-						threads.get(chan).interrupt();
-						threads.remove(chan);
-					}
-					if (message.contains(pre + "!runharam")) {//multithreaded haram
-					
-					}
-					else if (message.contains(pre + "!runinsult")) {//multithreaded insult
-						System.out.println("here");
-						try {
-							th.spam = insult();
-						} catch (IOException e) {}
-						threads.put(chan, new multithread());
-						threads.get(chan).start();
-					}
-					else if (message.contains(pre + "!runspace")) {//multithreaded space
-						
-					}
-					else if (message.contains(pre + "!runping")) {//multithreaded pinging
-						
-					}
+					threading(message, chan, pre);
 				}
 				else if (message.contains(pre + "!die")) {//debug, exits program
 					chan.sendMessage("Going Offline...");
@@ -94,15 +68,45 @@ public class Main {
 			}
 		});
 	}
-	static String insult() throws IOException{//Reddit insulter
+	static String insult(){//Reddit insulter
+		String re = "";
 		int n = (int) (Math.random()*21795);
-		for(int i = 0; i < n; i++) read.readLine();
-		String re = read.readLine();
-		if(re.length() > 2000)re = re.substring(0, 1999);
+		try {
+			for(int i = 0; i < n; i++) read.readLine();
+			re = read.readLine();
+			if(re.length() > 2000)re = re.substring(0, 1999);
+		} catch (IOException e) {}
 		return re;
 	}
 	static void stop(Messageable chan) {//stops multithreading
-		if(threads.containsKey(chan)) threads.get(chan).interrupt();
+		if(threads.containsKey(chan)) {
+			System.out.println(threads.get(chan));
+			threads.get(chan).interrupt();
+		}
+	}
+	static void threading(String message, Messageable chan, String pre){
+		multithread.chan = chan;
+		if(threads.containsKey(chan)){
+			threads.get(chan).interrupt();
+			threads.remove(chan);
+		}
+		if (message.contains(pre + "!runharam")) {//multithreaded haram
+			multithread.spam = al.toString();
+		}
+		else if (message.contains(pre + "!runinsult")) {//multithreaded insult
+			
+		}
+		else if (message.contains(pre + "!runspace")) {//multithreaded space
+			multithread.spam = sp.toString();
+		}
+		else if (message.contains(pre + "!runping")) {//multithreaded pinging
+			multithread.spam = "@here\n";
+		}
+		threads.put(chan, new multithread());
+		threads.get(chan).start();
+		try {
+			threads.get(chan).wait(111);
+		} catch (InterruptedException e) {e.printStackTrace();}
 	}
 	static String prefix(Server serv) {
 		if(prefixes.containsKey(serv)) return prefixes.get(serv);
@@ -110,11 +114,9 @@ public class Main {
 	}
 }
 class multithread extends Thread{
-	public String spam;
-	public Messageable chan;
+	public static String spam;
+	public static Messageable chan;
 	public void run(){
-		System.out.println(chan);
-		System.out.println(spam);
 		while(true) chan.sendMessage(spam);
 	}
 }
