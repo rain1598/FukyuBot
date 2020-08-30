@@ -5,8 +5,11 @@ A Maven port/overhaul of BUP by Cafeepy
 
 Compile instructions: add bot token as Token.txt to src/main/resources in the IDE explorer
 
-# Commands
+# Debug
 
+ - diexit - exits program
+
+# Commands
 {Prefix}!{Type} {Command}
 
 Default Prefix = f
