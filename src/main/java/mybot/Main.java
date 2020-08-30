@@ -10,7 +10,7 @@ import org.javacord.api.event.message.MessageCreateEvent;
 public class Main {
 	static ClassLoader load = Thread.currentThread().getContextClassLoader();
 	static BufferedReader Token = new BufferedReader(new InputStreamReader(load.getResourceAsStream("Token.txt")));
-	static BufferedReader rin = new BufferedReader(new InputStreamReader(load.getResourceAsStream("redditinsultsnodupe.txt")));
+	static BufferedReader rin;
 	static BufferedReader copy = new BufferedReader(new InputStreamReader(load.getResourceAsStream("copypastas.txt")));
 	static HashMap<Messageable, Thread> threads = new HashMap<Messageable, Thread>();
 	static HashMap<MessageAuthor, String> prefixes = new HashMap<MessageAuthor, String>();
@@ -77,8 +77,6 @@ public class Main {
 			chan.sendMessage(pastas[3]); break;
 		case "pandemonika" :
 			chan.sendMessage(pastas[4]); break;
-		case "help" :
-			break;
 		}
 	}
 	static void changeprefix(){
@@ -95,6 +93,7 @@ public class Main {
 		String re = "";
 		int n = (int) (Math.random()*21795);
 		try {
+			rin = new BufferedReader(new InputStreamReader(load.getResourceAsStream("redditinsultsnodupe.txt")));
 			for(int i = 0; i < n; i++) rin.readLine();
 			re = rin.readLine();
 			if(re.length() > 2000)re = re.substring(0, 1999);
@@ -112,7 +111,10 @@ public class Main {
 		multithread.chan = chan;
 		switch(message) {
 		case "insult":
-			multithread.spam = insult(); break;//reddit database insulter
+			insultthread.chan = chan;
+			threads.put(chan, new insultthread());
+			threads.get(chan).start();
+			return;
 		case "stop" :
 			stop(chan); break; //stop treads
 		case "allah" :
@@ -129,8 +131,6 @@ public class Main {
 			multithread.spam = pastas[3]; break;
 		case "pandemonika" :
 			multithread.spam = pastas[4]; break;
-		case "help" :
-			break;
 		case "ping" :
 			multithread.spam = "@everyone\n";
 		}
@@ -151,6 +151,21 @@ class multithread extends Thread{
 		try {
 			while(true) {
 				ch.sendMessage(sp).join();
+				TimeUnit.SECONDS.sleep(1);		
+			}
+		} catch (InterruptedException e) {
+			ch.sendMessage("Spam Stopped");
+			return;
+		}
+	}
+}
+class insultthread extends Thread{
+	public static Messageable chan;
+	public void run() {
+		Messageable ch = chan;
+		try {
+			while(true) {
+				ch.sendMessage(Main.insult()).join();
 				TimeUnit.SECONDS.sleep(1);		
 			}
 		} catch (InterruptedException e) {
