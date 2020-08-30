@@ -3,7 +3,7 @@ The destructive discord bot
 
 A Maven port/overhaul of BUP by Cafeepy
 
-Compile instructions: add token as Token.txt to src/main/resources in the IDE explorer
+Compile instructions: add bot token as Token.txt to src/main/resources in the IDE explorer
 
 # Commands
 
@@ -11,7 +11,7 @@ Compile instructions: add token as Token.txt to src/main/resources in the IDE ex
 
 Default Prefix = f
 
-**Types**
+**Types:**
 
 p => pastes a copypasta
 
@@ -22,3 +22,14 @@ p => pastes a copypasta
  - doctor - the head doctor is 89 years old?
  - kira - pastes Yoshikage Kira's monologue
  - pandemonika - pastes Egor's Pandemonika rant (https://youtu.be/Hy65jqREpDA)
+
+m => spams a copypasta every second
+
+ - (all of type p have been implemented)
+ - ping - spams @everyone
+
+s => stops spam
+
+c => changes prefix (1 user 1 prefix)
+
+ - f - reset prefix
