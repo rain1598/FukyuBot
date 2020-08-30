@@ -29,6 +29,7 @@ p => pastes a copypasta
 m => spams a copypasta every second
 
  - (all of type p have been implemented)
+ - insult - f!p insult but it spams randomized
  - ping - spams @everyone
 
 s => stops spam
