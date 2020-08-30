@@ -3,7 +3,7 @@ The destructive discord bot
 
 A Maven port/overhaul of BUP by Cafeepy
 
-Compile instructions: add bot token as Token.txt to src/main/resources in the IDE explorer
+Compile instructions: add bot token as Token.txt to the two locations in .gitignore
 
 # Debug
 
