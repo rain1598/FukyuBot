@@ -1,6 +1,8 @@
 package mybot;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+
 import org.javacord.api.*;
 import org.javacord.api.entity.message.Messageable;
 import org.javacord.api.entity.server.Server;
@@ -40,7 +42,7 @@ public class Main {
 				else if (message.contains(pre + "!stop")) {//stop 
 					stop(chan);
 				}
-				else if(message.contains(pre + "!run")) {
+				else if(message.contains(pre + "!m")) {
 					threading(message, chan, pre);
 				}
 				else if (message.contains(pre + "!die")) {//debug, exits program
@@ -90,23 +92,21 @@ public class Main {
 			threads.get(chan).interrupt();
 			threads.remove(chan);
 		}
-		if (message.contains(pre + "!runharam")) {//multithreaded haram
+		if (message.contains(pre + "!mharam")) {//multithreaded haram
 			multithread.spam = al.toString();
 		}
-		else if (message.contains(pre + "!runinsult")) {//multithreaded insult
+		else if (message.contains(pre + "!minsult")) {//multithreaded insult
 			
 		}
-		else if (message.contains(pre + "!runspace")) {//multithreaded space
+		else if (message.contains(pre + "!mspace")) {//multithreaded space
 			multithread.spam = sp.toString();
 		}
-		else if (message.contains(pre + "!runping")) {//multithreaded pinging
+		else if (message.contains(pre + "!mping")) {//multithreaded pinging
 			multithread.spam = "@here\n";
 		}
 		threads.put(chan, new multithread());
 		threads.get(chan).start();
-		try {
-			threads.get(chan).wait(111);
-		} catch (InterruptedException e) {e.printStackTrace();}
+		
 	}
 	static String prefix(Server serv) {
 		if(prefixes.containsKey(serv)) return prefixes.get(serv);
@@ -116,7 +116,16 @@ public class Main {
 class multithread extends Thread{
 	public static String spam;
 	public static Messageable chan;
-	public void run(){
-		while(true) chan.sendMessage(spam);
+	public void run() {
+		String sp = spam;
+		Messageable ch = chan;
+		try {
+			while(true) {
+				ch.sendMessage(sp).join();
+				TimeUnit.SECONDS.sleep(1);		
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }
