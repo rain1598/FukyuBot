@@ -4,9 +4,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>package</groupId>
-    <artifactId>myfirstbot</artifactId>
-    <version>1.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
@@ -17,4 +14,14 @@
         </dependency>
     </dependencies>
 
+    <groupId>com.github.rain1598</groupId>
+    <version>0.1.3</version>
+    <name>FukYuBot</name>
+    <artifactId>DiscordBot</artifactId>
+    <url>https://github.com/rain1598/FukyuBot</url>
+    <description>The destructive discord bot, a Maven port/overhaul of BUP by Cafeepy.</description>
+    <organization>
+    	<name>rain1598</name>
+    	<url>https://github.com/rain1598</url>
+    </organization>
 </project>
