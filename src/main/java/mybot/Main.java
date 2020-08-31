@@ -77,6 +77,8 @@ public class Main {
 			chan.sendMessage(pastas[3]); break;
 		case "pandemonika" :
 			chan.sendMessage(pastas[4]); break;
+		case "help":
+			chan.sendMessage("https://github.com/rain1598/FukyuBot"); break;
 		}
 	}
 	static void changeprefix(){
@@ -108,11 +110,11 @@ public class Main {
 	}
 	static void threading(){
 		stop(chan);
-		mt.insult = false;
+		mt.mode = 0;
 		mt.chan = chan;
 		switch(message) {
 		case "insult":
-			mt.insult = true; break;
+			mt.mode = 1; break;
 		case "stop" :
 			stop(chan); break; //stop treads
 		case "allah" :
@@ -131,6 +133,8 @@ public class Main {
 			mt.spam = pastas[4]; break;
 		case "ping" :
 			mt.spam = "@everyone";
+		case "cum" :
+			mt.mode = 2; break;
 		}
 		threads.put(chan, new mt());
 		threads.get(chan).start();
@@ -143,26 +147,34 @@ public class Main {
 class mt extends Thread{
 	public static String spam;
 	public static Messageable chan;
-	public static boolean insult;
+	public static int mode;
 	public void run() {
 		String sp = spam;
 		Messageable ch = chan;
 		try {
-			if(insult) {
+			switch(mode) {
+			case 0:
+				while(true) {
+					ch.sendMessage(sp).join();
+					TimeUnit.SECONDS.sleep(1);		
+				}
+			case 1:
 				while(true) {
 					ch.sendMessage(Main.insult()).join();
 					TimeUnit.SECONDS.sleep(1);		
 				}
-			}
-			else {
+			case 2:
+				BufferedReader cum = new BufferedReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream("cum.txt")));
 				while(true) {
-					ch.sendMessage(sp).join();
+					String c2 = cum.readLine();
+					if(c2 == null)return;
+					ch.sendMessage(c2).join();
 					TimeUnit.SECONDS.sleep(1);		
 				}
 			}
 		} catch (InterruptedException e) {
 			ch.sendMessage("Spam Stopped");
 			return;
-		}
+		} catch (IOException e) {}
 	}
 }
