@@ -25,12 +25,14 @@ p => pastes a copypasta
  - doctor - the head doctor is 89 years old?
  - kira - pastes Yoshikage Kira's monologue
  - pandemonika - pastes Egor's Pandemonika rant (https://youtu.be/Hy65jqREpDA)
+ - help - links to this page
 
 m => spams a copypasta every second
 
  - (all of type p have been implemented)
  - insult - f!p insult but it spams randomized
  - ping - spams @everyone
+ - cum - writes the lyrics to Welcome To The Cum Zone and Heir To The Cum Throne line by line
 
 s => stops spam
 
