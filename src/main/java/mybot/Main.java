@@ -19,7 +19,7 @@ public class Main {
 	static String message;
 	static Messageable chan;
 	static String pre;
-	static String[] pastas = new String[5];
+	static String[] pastas = new String[9];
 	static MessageCreateEvent event;
 	
 	public static void main(String[] args) throws IOException {
@@ -77,6 +77,14 @@ public class Main {
 			chan.sendMessage(pastas[3]); break;
 		case "pandemonika" :
 			chan.sendMessage(pastas[4]); break;
+		case "navy":
+			chan.sendMessage(pastas[5]); break;
+		case "fitness":
+			chan.sendMessage(pastas[6]); break;
+		case "linux":
+			chan.sendMessage(pastas[7]); break;
+		case "furry":
+			chan.sendMessage(pastas[8]); break;
 		case "help":
 			chan.sendMessage("https://github.com/rain1598/FukyuBot"); break;
 		}
@@ -131,8 +139,20 @@ public class Main {
 			mt.spam = pastas[3]; break;
 		case "pandemonika" :
 			mt.spam = pastas[4]; break;
-		case "ping" :
-			mt.spam = "@everyone";
+		case "navy":
+			mt.spam = pastas[5]; break;
+		case "fitness":
+			mt.spam = pastas[6]; break;
+		case "linux":
+			mt.spam = pastas[7]; break;
+		case "furry":
+			mt.spam = pastas[8]; break;
+		case "help":
+			mt.spam = "https://github.com/rain1598/FukyuBot"; break;
+		case "pinge" :
+			mt.spam = "@everyone"; break;
+		case "pingu" :
+			mt.spam = "@"+event.getMessageAuthor().getDiscriminatedName()+" "; break;
 		case "cum" :
 			mt.mode = 2; break;
 		}
