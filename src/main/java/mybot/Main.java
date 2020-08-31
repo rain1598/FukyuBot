@@ -17,7 +17,7 @@ public class Main {
 	static StringBuilder allah = new StringBuilder();
 	static StringBuilder space = new StringBuilder();
 	static String message;
-	static Messageable chan; 
+	static Messageable chan;
 	static String pre;
 	static String[] pastas = new String[5];
 	static MessageCreateEvent event;
@@ -93,7 +93,7 @@ public class Main {
 		String re = "";
 		int n = (int) (Math.random()*21795);
 		try {
-			rin = new BufferedReader(new InputStreamReader(load.getResourceAsStream("redditinsultsnodupe.txt")));
+			rin = new BufferedReader(new InputStreamReader(load.getResourceAsStream("redditmoment.txt")));
 			for(int i = 0; i < n; i++) rin.readLine();
 			re = rin.readLine();
 			if(re.length() > 2000)re = re.substring(0, 1999);
@@ -108,33 +108,31 @@ public class Main {
 	}
 	static void threading(){
 		stop(chan);
-		multithread.chan = chan;
+		mt.insult = false;
+		mt.chan = chan;
 		switch(message) {
 		case "insult":
-			insultthread.chan = chan;
-			threads.put(chan, new insultthread());
-			threads.get(chan).start();
-			return;
+			mt.insult = true; break;
 		case "stop" :
 			stop(chan); break; //stop treads
 		case "allah" :
-			multithread.spam = allah.toString(); break;
+			mt.spam = allah.toString(); break;
 		case "space" :
-			multithread.spam = space.toString(); break;
+			mt.spam = space.toString(); break;
 		case "plagueis" :
-			multithread.spam = pastas[0]; break;
+			mt.spam = pastas[0]; break;
 		case "sorry" :
-			multithread.spam = pastas[1]; break;
+			mt.spam = pastas[1]; break;
 		case "doctor" :
-			multithread.spam = pastas[2]; break;
+			mt.spam = pastas[2]; break;
 		case "kira" :
-			multithread.spam = pastas[3]; break;
+			mt.spam = pastas[3]; break;
 		case "pandemonika" :
-			multithread.spam = pastas[4]; break;
+			mt.spam = pastas[4]; break;
 		case "ping" :
-			multithread.spam = "@everyone\n";
+			mt.spam = "@everyone";
 		}
-		threads.put(chan, new multithread());
+		threads.put(chan, new mt());
 		threads.get(chan).start();
 	}
 	static String prefix(MessageAuthor us) {
@@ -142,31 +140,25 @@ public class Main {
 		return "f";
 	}
 }
-class multithread extends Thread{
+class mt extends Thread{
 	public static String spam;
 	public static Messageable chan;
+	public static boolean insult;
 	public void run() {
 		String sp = spam;
 		Messageable ch = chan;
 		try {
-			while(true) {
-				ch.sendMessage(sp).join();
-				TimeUnit.SECONDS.sleep(1);		
+			if(insult) {
+				while(true) {
+					ch.sendMessage(Main.insult()).join();
+					TimeUnit.SECONDS.sleep(1);		
+				}
 			}
-		} catch (InterruptedException e) {
-			ch.sendMessage("Spam Stopped");
-			return;
-		}
-	}
-}
-class insultthread extends Thread{
-	public static Messageable chan;
-	public void run() {
-		Messageable ch = chan;
-		try {
-			while(true) {
-				ch.sendMessage(Main.insult()).join();
-				TimeUnit.SECONDS.sleep(1);		
+			else {
+				while(true) {
+					ch.sendMessage(sp).join();
+					TimeUnit.SECONDS.sleep(1);		
+				}
 			}
 		} catch (InterruptedException e) {
 			ch.sendMessage("Spam Stopped");
