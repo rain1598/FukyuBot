@@ -1,4 +1,4 @@
-# FukyuBot
+# Spammer's Haven
 The destructive discord bot
 
 A Javacord port/overhaul of BUP by Cafeepy
