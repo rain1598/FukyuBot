@@ -7,6 +7,8 @@ import org.javacord.api.*;
 import org.javacord.api.entity.message.MessageAuthor;
 import org.javacord.api.entity.message.Messageable;
 import org.javacord.api.event.message.MessageCreateEvent;
+
+import com.udojava.evalex.*;
 public class Main {
 	static ClassLoader load = Thread.currentThread().getContextClassLoader();
 	static BufferedReader Token = new BufferedReader(new InputStreamReader(load.getResourceAsStream("Token.txt")));
@@ -21,6 +23,7 @@ public class Main {
 	static String pre;
 	static String[] pastas = new String[9];
 	static MessageCreateEvent event;
+	static int third = 0;
 	
 	public static void main(String[] args) throws IOException {
 		space.append((char)8203);
@@ -33,14 +36,24 @@ public class Main {
 		System.out.println("Logged in!");
 		
 		api.addMessageCreateListener(event -> {
-			String check = event.getMessageContent().substring(0, prefix(event.getMessageAuthor()).length()+1);
-			if(check.equals(prefix(event.getMessageAuthor())+"!")) {
-				readmanager(event);
-			}
-			else if(event.getMessageContent().contains("diexit")) {//debug, exits program
-				event.getChannel().sendMessage("Going Offline...");
-				api.disconnect();
-				System.exit(0);
+			if(!event.getMessageAuthor().getDiscriminatedName().equals("Fukyu#1496")){
+				if(third > 0) {
+					message = event.getMessageContent();
+					chan = event.getChannel();
+					pre = prefix(event.getMessageAuthor());
+					thirdmanager();
+				}
+				else {
+					String check = event.getMessageContent().substring(0, prefix(event.getMessageAuthor()).length()+1);
+					if(check.equals(prefix(event.getMessageAuthor())+"!")) {
+						readmanager(event);
+					}
+					else if(event.getMessageContent().contains("diexit")) {//debug, exits program
+						event.getChannel().sendMessage("Going Offline...");
+						api.disconnect();
+						System.exit(0);
+					}
+				}
 			}
 		});
 	}
@@ -49,13 +62,19 @@ public class Main {
 		chan = eve.getChannel();
 		pre = prefix(eve.getMessageAuthor());
 		if(cmd.length>1) message = cmd[1].toLowerCase();
+		else return;
 		event = eve;
 		switch(cmd[0].charAt(pre.length()+1)){
 		case 'p':paste();break;
 		case 'm':threading();break;
 		case 'c':changeprefix();break;
 		case 's':stop(chan);break;
+		case 'x':special();break;
 		}
+	}
+	static String prefix(MessageAuthor us) {
+		if(prefixes.containsKey(us)) return prefixes.get(us);
+		return "f";
 	}
 	static void paste(){
 		switch(message) {
@@ -87,16 +106,6 @@ public class Main {
 			chan.sendMessage(pastas[8]); break;
 		case "help":
 			chan.sendMessage("https://github.com/rain1598/FukyuBot"); break;
-		}
-	}
-	static void changeprefix(){
-		if(message.equals("f")) {
-			prefixes.remove(event.getMessageAuthor());
-			chan.sendMessage("prefix reset");
-		}
-		else {
-			prefixes.put(event.getMessageAuthor(), message);
-			chan.sendMessage("prefix changed to: "+message);
 		}
 	}
 	static String insult(){//Reddit insulter
@@ -157,9 +166,32 @@ public class Main {
 		threads.put(chan, new mt());
 		threads.get(chan).start();
 	}
-	static String prefix(MessageAuthor us) {
-		if(prefixes.containsKey(us)) return prefixes.get(us);
-		return "f";
+	static void changeprefix(){
+		if(message.equals("f")) {
+			prefixes.remove(event.getMessageAuthor());
+			chan.sendMessage("prefix reset");
+		}
+		else {
+			prefixes.put(event.getMessageAuthor(), message);
+			chan.sendMessage("prefix changed to: "+message);
+		}
+	}
+	static void thirdmanager() {
+		int rd = third;
+		third = 0;
+		switch(rd) {
+		case 1:exp();break;
+		}
+	}
+	static void exp() {
+		chan.sendMessage(new Expression(message).eval().toPlainString());
+	}
+	static void special() {
+		switch(message) {
+		case "math":
+			chan.sendMessage("Math brought to you by EvalEx.\nNote: % is modulo, not percentage");
+			third = 1; break;
+		}
 	}
 }
 class mt extends Thread{
