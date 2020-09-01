@@ -4,7 +4,7 @@ The development of this implementation will be discontinued in favor of JDA, whi
 # FukyuBot
 The destructive discord bot
 
-A Maven port/overhaul of BUP by Cafeepy
+A Javacord port/overhaul of BUP by Cafeepy
 
 Compile instructions: add bot token as Token.txt to the two locations in .gitignore
 
@@ -29,6 +29,10 @@ p => pastes a copypasta
  - kira - pastes Yoshikage Kira's monologue
  - pandemonika - pastes Egor's Pandemonika rant (https://youtu.be/Hy65jqREpDA)
  - help - links to this page
+ - navy - pastes the navy seal copypasta
+ - fitness - Fitnessgram Pacer Test copypasta
+ - linux - It's GNU/Linux, not linux
+ - furry - pastes the original furry copypasta
 
 m => spams a copypasta every second
 
