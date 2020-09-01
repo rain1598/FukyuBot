@@ -1,3 +1,6 @@
+# Important
+The development of this implementation will be discontinued in favor of JDA, which supports selfbots. However, this page will forever stay online.
+
 # FukyuBot
 The destructive discord bot
 
