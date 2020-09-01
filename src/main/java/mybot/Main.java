@@ -151,8 +151,6 @@ public class Main {
 			mt.spam = "https://github.com/rain1598/FukyuBot"; break;
 		case "pinge" :
 			mt.spam = "@everyone"; break;
-		case "pingu" :
-			mt.spam = "@"+event.getMessageAuthor().getDiscriminatedName()+" "; break;
 		case "cum" :
 			mt.mode = 2; break;
 		}
