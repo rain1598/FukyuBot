@@ -24,6 +24,7 @@ public class Main {
 	static String[] pastas = new String[9];
 	static MessageCreateEvent event;
 	static int third = 0;
+	static String sfwserver = "F Y Testing";
 	
 	public static void main(String[] args) throws IOException {
 		space.append((char)8203);
@@ -79,7 +80,7 @@ public class Main {
 	static void paste(){
 		switch(message) {
 		case "insult":
-			if(event.getServer().get().getName().equals("SSPS")) {
+			if(event.getServer().get().getName().equals(sfwserver)) {
 				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
 				return;
 			}
@@ -99,6 +100,10 @@ public class Main {
 		case "kira" :
 			chan.sendMessage(pastas[3]); break;
 		case "pandemonika" :
+			if(event.getServer().get().getName().equals(sfwserver)) {
+				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
+				return;
+			}
 			chan.sendMessage(pastas[4]); break;
 		case "navy":
 			chan.sendMessage(pastas[5]); break;
@@ -107,13 +112,23 @@ public class Main {
 		case "linux":
 			chan.sendMessage(pastas[7]); break;
 		case "furry":
+			if(event.getServer().get().getName().equals(sfwserver)) {
+				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
+				return;
+			}
 			chan.sendMessage(pastas[8]); break;
 		case "help":
-			chan.sendMessage("https://github.com/rain1598/FukyuBot"); break;
+			chan.sendMessage("https://github.com/rain1598/SpammersHaven"); break;
 		case "mathhelp":
 			chan.sendMessage("https://github.com/uklimaschewski/EvalEx"); break;
 		case "pingme":
 			chan.sendMessage(event.getMessageAuthor().asUser().get().getMentionTag()); break;
+		case "nsfwtest":
+			if(event.getServer().get().getName().equals(sfwserver)) {
+				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
+				return;
+			}
+			chan.sendMessage("NSFW");
 		}
 	}
 	static String insult(){//Reddit insulter
@@ -139,13 +154,15 @@ public class Main {
 		mt.chan = chan;
 		switch(message) {
 		case "insult":
-			if(event.getServer().get().getName().equals("SSPS")) {
+			if(event.getServer().get().getName().equals(sfwserver)) {
 				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
 				return;
 			}
 			mt.mode = 1; break;
 		case "allah" :
 			mt.spam = allah.toString(); break;
+		case "stop" :
+			stop(chan); return;
 		case "space" :
 			mt.spam = space.toString(); break;
 		case "plagueis" :
@@ -157,6 +174,10 @@ public class Main {
 		case "kira" :
 			mt.spam = pastas[3]; break;
 		case "pandemonika" :
+			if(event.getServer().get().getName().equals(sfwserver)) {
+				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
+				return;
+			}
 			mt.spam = pastas[4]; break;
 		case "navy":
 			mt.spam = pastas[5]; break;
@@ -165,19 +186,29 @@ public class Main {
 		case "linux":
 			mt.spam = pastas[7]; break;
 		case "furry":
+			if(event.getServer().get().getName().equals(sfwserver)) {
+				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
+				return;
+			}
 			mt.spam = pastas[8]; break;
 		case "help":
-			mt.spam = "https://github.com/rain1598/FukyuBot"; break;
+			mt.spam = "https://github.com/rain1598/SpammersHaven"; break;
 		case "mathhelp":
 			mt.spam = "https://github.com/uklimaschewski/EvalEx"; break;
 		case "pingme" :
 			mt.spam = event.getMessageAuthor().asUser().get().getMentionTag(); break;
 		case "cum" :
-			if(event.getServer().get().getName().equals("SSPS")) {
+			if(event.getServer().get().getName().equals(sfwserver)) {
 				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
 				return;
 			}
 			mt.mode = 2; break;
+		case "nsfwtest":
+			if(event.getServer().get().getName().equals(sfwserver)) {
+				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
+				return;
+			}
+			mt.spam = "NSFW";
 		}
 		threads.put(chan, new mt());
 		threads.get(chan).start();
@@ -233,7 +264,7 @@ class mt extends Thread{
 				BufferedReader cum = new BufferedReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream("cum.txt")));
 				while(true) {
 					String c2 = cum.readLine();
-					if(c2 == null)return;
+					if(c2 == null)cum = new BufferedReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream("cum.txt")));
 					ch.sendMessage(c2).join();
 					TimeUnit.SECONDS.sleep(1);		
 				}
