@@ -36,7 +36,6 @@ m => spams a copypasta every second
 
  - (all of type p have been implemented)
  - insult - f!p insult but it spams randomized
- - ping - spams @everyone
  - cum - writes the lyrics to Welcome To The Cum Zone and Heir To The Cum Throne line by line
 
 s => stops spam
