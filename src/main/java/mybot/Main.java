@@ -35,8 +35,9 @@ public class Main {
 		DiscordApi api = new DiscordApiBuilder().setToken(Token.readLine()).login().join();
 		System.out.println("Logged in!");
 		
+		String botname = Token.readLine();
 		api.addMessageCreateListener(event -> {
-			if(!event.getMessageAuthor().getDiscriminatedName().equals("Fukyu#1496")){
+			if(!event.getMessageAuthor().getDiscriminatedName().equals(botname)){
 				if(third > 0) {
 					message = event.getMessageContent();
 					chan = event.getChannel();
@@ -62,14 +63,13 @@ public class Main {
 		chan = eve.getChannel();
 		pre = prefix(eve.getMessageAuthor());
 		if(cmd.length>1) message = cmd[1].toLowerCase();
-		else return;
 		event = eve;
 		switch(cmd[0].charAt(pre.length()+1)){
-		case 'p':paste();break;
-		case 'm':threading();break;
-		case 'c':changeprefix();break;
-		case 's':stop(chan);break;
-		case 'x':special();break;
+		case 'p':paste(); break;
+		case 'm':threading(); break;
+		case 'c':changeprefix(); break;
+		case 's':stop(chan); break;
+		case 'x':special(); break;
 		}
 	}
 	static String prefix(MessageAuthor us) {
@@ -79,6 +79,10 @@ public class Main {
 	static void paste(){
 		switch(message) {
 		case "insult":
+			if(event.getServer().get().getName().equals("SSPS")) {
+				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
+				return;
+			}
 			chan.sendMessage(insult()); break;//reddit database insulter
 		case "stop" :
 			stop(chan); break; //stop treads
@@ -106,6 +110,10 @@ public class Main {
 			chan.sendMessage(pastas[8]); break;
 		case "help":
 			chan.sendMessage("https://github.com/rain1598/FukyuBot"); break;
+		case "mathhelp":
+			chan.sendMessage("https://github.com/uklimaschewski/EvalEx"); break;
+		case "pingme":
+			chan.sendMessage(event.getMessageAuthor().asUser().get().getMentionTag()); break;
 		}
 	}
 	static String insult(){//Reddit insulter
@@ -131,9 +139,11 @@ public class Main {
 		mt.chan = chan;
 		switch(message) {
 		case "insult":
+			if(event.getServer().get().getName().equals("SSPS")) {
+				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
+				return;
+			}
 			mt.mode = 1; break;
-		case "stop" :
-			stop(chan); break; //stop treads
 		case "allah" :
 			mt.spam = allah.toString(); break;
 		case "space" :
@@ -158,9 +168,15 @@ public class Main {
 			mt.spam = pastas[8]; break;
 		case "help":
 			mt.spam = "https://github.com/rain1598/FukyuBot"; break;
-		case "pinge" :
-			mt.spam = "@everyone"; break;
+		case "mathhelp":
+			mt.spam = "https://github.com/uklimaschewski/EvalEx"; break;
+		case "pingme" :
+			mt.spam = event.getMessageAuthor().asUser().get().getMentionTag(); break;
 		case "cum" :
+			if(event.getServer().get().getName().equals("SSPS")) {
+				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
+				return;
+			}
 			mt.mode = 2; break;
 		}
 		threads.put(chan, new mt());
