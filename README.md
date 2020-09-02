@@ -8,7 +8,14 @@ add bot token as Token.txt to the two locations in .gitignore
 
 # Debug
 
- - diexit - exits program
+diexit - exits program
+
+SFWServer String - bans the use of the commands:
+ 
+ - insult
+ - pandemonika
+ - furry
+ - cum
 
 # Commands
 {Prefix}!{Type} {Command}
