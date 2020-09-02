@@ -13,6 +13,7 @@ public class Main {
 	static ClassLoader load = Thread.currentThread().getContextClassLoader();
 	static BufferedReader Token = new BufferedReader(new InputStreamReader(load.getResourceAsStream("Token.txt")));
 	static BufferedReader rin;
+	static BufferedReader badwords = new BufferedReader(new InputStreamReader(load.getResourceAsStream("badwords.txt")));
 	static BufferedReader copy = new BufferedReader(new InputStreamReader(load.getResourceAsStream("copypastas.txt")));
 	static HashMap<Messageable, Thread> threads = new HashMap<Messageable, Thread>();
 	static HashMap<MessageAuthor, String> prefixes = new HashMap<MessageAuthor, String>();
@@ -21,10 +22,12 @@ public class Main {
 	static String message;
 	static Messageable chan;
 	static String pre;
+	static String servername;
 	static String[] pastas = new String[9];
 	static MessageCreateEvent event;
 	static int third = 0;
-	static String sfwserver = "F Y Testing";
+	static HashSet<String> bad = new HashSet<String>();
+	static HashSet<String> sfw = new HashSet<String>();
 	
 	public static void main(String[] args) throws IOException {
 		space.append((char)8203);
@@ -32,6 +35,9 @@ public class Main {
 		space.append((char)8203);//spaces
 		for(int i = 0; i < 2000; i++) allah.append(((char)65021));//allah
 		for(int i = 0; i < pastas.length; i++)pastas[i] = copy.readLine();
+		for(int i = 0; i < 76; i++)bad.add(badwords.readLine());
+		sfw.add("SSPS");
+		sfw.add("F Y T 2");
 		
 		DiscordApi api = new DiscordApiBuilder().setToken(Token.readLine()).login().join();
 		System.out.println("Logged in!");
@@ -55,6 +61,11 @@ public class Main {
 						api.disconnect();
 						System.exit(0);
 					}
+					else if(sfw.contains(event.getServer().get().getName())){
+						for(String e:event.getMessageContent().split(" ")) {
+							if(bad.contains(e)) event.getChannel().sendMessage("NO SWEARING on my Christian Discord Server!!!");
+						}
+					}
 				}
 			}
 		});
@@ -63,6 +74,7 @@ public class Main {
 		String[] cmd = eve.getMessageContent().split(" ");
 		chan = eve.getChannel();
 		pre = prefix(eve.getMessageAuthor());
+		servername = event.getServer().get().getName();
 		if(cmd.length>1) message = cmd[1].toLowerCase();
 		event = eve;
 		switch(cmd[0].charAt(pre.length()+1)){
@@ -80,7 +92,7 @@ public class Main {
 	static void paste(){
 		switch(message) {
 		case "insult":
-			if(event.getServer().get().getName().equals(sfwserver)) {
+			if(sfw.contains(servername)) {
 				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
 				return;
 			}
@@ -100,7 +112,7 @@ public class Main {
 		case "kira" :
 			chan.sendMessage(pastas[3]); break;
 		case "pandemonika" :
-			if(event.getServer().get().getName().equals(sfwserver)) {
+			if(sfw.contains(servername)) {
 				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
 				return;
 			}
@@ -112,7 +124,7 @@ public class Main {
 		case "linux":
 			chan.sendMessage(pastas[7]); break;
 		case "furry":
-			if(event.getServer().get().getName().equals(sfwserver)) {
+			if(sfw.contains(servername)) {
 				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
 				return;
 			}
@@ -124,7 +136,7 @@ public class Main {
 		case "pingme":
 			chan.sendMessage(event.getMessageAuthor().asUser().get().getMentionTag()); break;
 		case "nsfwtest":
-			if(event.getServer().get().getName().equals(sfwserver)) {
+			if(sfw.contains(servername)) {
 				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
 				return;
 			}
@@ -154,7 +166,7 @@ public class Main {
 		mt.chan = chan;
 		switch(message) {
 		case "insult":
-			if(event.getServer().get().getName().equals(sfwserver)) {
+			if(sfw.contains(servername)) {
 				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
 				return;
 			}
@@ -174,7 +186,7 @@ public class Main {
 		case "kira" :
 			mt.spam = pastas[3]; break;
 		case "pandemonika" :
-			if(event.getServer().get().getName().equals(sfwserver)) {
+			if(sfw.contains(servername)) {
 				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
 				return;
 			}
@@ -186,7 +198,7 @@ public class Main {
 		case "linux":
 			mt.spam = pastas[7]; break;
 		case "furry":
-			if(event.getServer().get().getName().equals(sfwserver)) {
+			if(sfw.contains(servername)) {
 				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
 				return;
 			}
@@ -198,13 +210,13 @@ public class Main {
 		case "pingme" :
 			mt.spam = event.getMessageAuthor().asUser().get().getMentionTag(); break;
 		case "cum" :
-			if(event.getServer().get().getName().equals(sfwserver)) {
+			if(sfw.contains(servername)) {
 				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
 				return;
 			}
 			mt.mode = 2; break;
 		case "nsfwtest":
-			if(event.getServer().get().getName().equals(sfwserver)) {
+			if(sfw.contains(servername)) {
 				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
 				return;
 			}
