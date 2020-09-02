@@ -46,6 +46,7 @@ m => spams a copypasta every second
  - (all of type p have been implemented)
  - insult - f!p insult but it spams randomized
  - cum - writes the lyrics to Welcome To The Cum Zone and Heir To The Cum Throne line by line
+ - stop - alternative way to stop spam
  
 x => special functions
 
