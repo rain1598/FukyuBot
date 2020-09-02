@@ -1,9 +1,10 @@
-# FukyuBot
+# Spammer's Haven
 The destructive discord bot
 
 A Javacord port/overhaul of BUP by Cafeepy
 
-Compile instructions: add bot token as Token.txt to the two locations in .gitignore
+Compile instructions: 
+add bot token as Token.txt to the two locations in .gitignore
 
 # Debug
 
@@ -35,7 +36,6 @@ m => spams a copypasta every second
 
  - (all of type p have been implemented)
  - insult - f!p insult but it spams randomized
- - ping - spams @everyone
  - cum - writes the lyrics to Welcome To The Cum Zone and Heir To The Cum Throne line by line
 
 s => stops spam
