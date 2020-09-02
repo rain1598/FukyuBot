@@ -31,12 +31,18 @@ p => pastes a copypasta
  - fitness - Fitnessgram Pacer Test copypasta
  - linux - It's GNU/Linux, not linux
  - furry - pastes the original furry copypasta
+ - mathhelp - links to EvalEx's GitHub Page
+ - pingme - pings yourself
 
 m => spams a copypasta every second
 
  - (all of type p have been implemented)
  - insult - f!p insult but it spams randomized
  - cum - writes the lyrics to Welcome To The Cum Zone and Heir To The Cum Throne line by line
+ 
+x => special functions
+
+ - math - does math using EvalEx (for more info and help, please visit https://github.com/uklimaschewski/EvalEx)
 
 s => stops spam
 
