@@ -12,6 +12,7 @@ import org.javacord.api.entity.message.MessageAuthor;
 import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.message.Messageable;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
+import org.javacord.api.entity.server.invite.InviteBuilder;
 import org.javacord.api.event.message.MessageCreateEvent;
 
 import com.udojava.evalex.*;
@@ -29,7 +30,7 @@ public class Main {
 	static Messageable chan;
 	static String pre;
 	static String servername;
-	static String[] pastas = new String[9];
+	static String[] pastas = new String[10];
 	static MessageCreateEvent event;
 	static int third = 0;
 	static HashSet<String> bad = new HashSet<String>();
@@ -39,6 +40,7 @@ public class Main {
 		space.append((char)8203);
 		for(int i = 0; i < 999; i++) space.append("\n");
 		space.append((char)8203);//spaces
+		
 		for(int i = 0; i < 2000; i++) allah.append(((char)65021));//allah
 		for(int i = 0; i < pastas.length; i++)pastas[i] = copy.readLine();
 		for(int i = 0; i < 70; i++)bad.add(badwords.readLine());
@@ -141,6 +143,8 @@ public class Main {
 				return;
 			}
 			pasted = pastas[8]; break;
+		case "freeman":
+			pasted = pastas[10]; break;
 		case "pingme" :
 			pasted = event.getMessageAuthor().asUser().get().getMentionTag(); break;
 		case "cum" :
@@ -162,6 +166,11 @@ public class Main {
 			new MessageBuilder().setEmbed(new EmbedBuilder().setTitle("Bot Invite Link")
 .setUrl("https://discord.com/api/oauth2/authorize?client_id=747632462191919204&permissions=3263489&redirect_uri=https%3A%2F%2Fdiscord.com%2Fapi%2Foauth2%2Fauthorize&scope=bot"))
 			.send(chan); return;
+		case "invite":
+			pasted = new InviteBuilder(event.getServerTextChannel().get())
+			.setMaxAgeInSeconds(0)
+		    .setMaxUses(0)
+		    .create().join().getUrl().toString(); break;
 		case "nsfwtest":
 			if(sfw.contains(servername)) {
 				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
@@ -170,6 +179,8 @@ public class Main {
 			chan.sendMessage("NSFW");
 		}
 		if(pm == 'm') {
+			mt.chan = chan;
+			mt.spam = pasted;
 			threads.put(chan, new mt());
 			threads.get(chan).start();
 		}
