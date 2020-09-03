@@ -1,9 +1,13 @@
 package mybot;
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
-import org.javacord.api.*;
+import org.javacord.api.DiscordApi;
+import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.message.MessageAuthor;
 import org.javacord.api.entity.message.Messageable;
 import org.javacord.api.event.message.MessageCreateEvent;
