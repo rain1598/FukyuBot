@@ -9,7 +9,9 @@ import java.util.concurrent.TimeUnit;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.message.MessageAuthor;
+import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.message.Messageable;
+import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.event.message.MessageCreateEvent;
 
 import com.udojava.evalex.*;
@@ -39,7 +41,7 @@ public class Main {
 		space.append((char)8203);//spaces
 		for(int i = 0; i < 2000; i++) allah.append(((char)65021));//allah
 		for(int i = 0; i < pastas.length; i++)pastas[i] = copy.readLine();
-		for(int i = 0; i < 76; i++)bad.add(badwords.readLine());
+		for(int i = 0; i < 70; i++)bad.add(badwords.readLine());
 		sfw.add("SSPS");
 		sfw.add("F Y T 2");
 		
@@ -82,8 +84,8 @@ public class Main {
 		if(cmd.length>1) message = cmd[1].toLowerCase();
 		event = eve;
 		switch(cmd[0].charAt(pre.length()+1)){
-		case 'p':paste(); break;
-		case 'm':threading(); break;
+		case 'p':paste('p'); break;
+		case 'm':paste('m'); break;
 		case 'c':changeprefix(); break;
 		case 's':stop(chan); break;
 		case 'x':special(); break;
@@ -93,58 +95,86 @@ public class Main {
 		if(prefixes.containsKey(us)) return prefixes.get(us);
 		return "f";
 	}
-	static void paste(){
+	static void paste(char pm){
+		String pasted = "";
 		switch(message) {
 		case "insult":
 			if(sfw.contains(servername)) {
 				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
 				return;
 			}
-			chan.sendMessage(insult()); break;//reddit database insulter
-		case "stop" :
-			stop(chan); break; //stop treads
+			if(pm == 'm') {
+				mt.chan = chan;
+				mt.mode = 1;
+				break;
+			}
+			pasted = insult(); break;
 		case "allah" :
-			chan.sendMessage(allah.toString()); break;
+			pasted = allah.toString(); break;
+		case "stop" :
+			stop(chan); return;
 		case "space" :
-			chan.sendMessage(space.toString()); break;
+			pasted = space.toString(); break;
 		case "plagueis" :
-			chan.sendMessage(pastas[0]); break;
+			pasted = pastas[0]; break;
 		case "sorry" :
-			chan.sendMessage(pastas[1]); break;
+			pasted = pastas[1]; break;
 		case "doctor" :
-			chan.sendMessage(pastas[2]); break;
+			pasted = pastas[2]; break;
 		case "kira" :
-			chan.sendMessage(pastas[3]); break;
+			pasted = pastas[3]; break;
 		case "pandemonika" :
 			if(sfw.contains(servername)) {
 				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
 				return;
 			}
-			chan.sendMessage(pastas[4]); break;
+			pasted = pastas[4]; break;
 		case "navy":
-			chan.sendMessage(pastas[5]); break;
+			pasted = pastas[5]; break;
 		case "fitness":
-			chan.sendMessage(pastas[6]); break;
+			pasted = pastas[6]; break;
 		case "linux":
-			chan.sendMessage(pastas[7]); break;
+			pasted = pastas[7]; break;
 		case "furry":
 			if(sfw.contains(servername)) {
 				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
 				return;
 			}
-			chan.sendMessage(pastas[8]); break;
+			pasted = pastas[8]; break;
+		case "pingme" :
+			pasted = event.getMessageAuthor().asUser().get().getMentionTag(); break;
+		case "cum" :
+			if(sfw.contains(servername)) {
+				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
+				return;
+			}
+			if(pm == 'm') {
+				mt.chan = chan;
+				mt.mode = 2;
+				break;
+			}
+			return;
 		case "help":
-			chan.sendMessage("https://github.com/rain1598/SpammersHaven"); break;
+			pasted = "https://github.com/rain1598/SpammersHaven"; break;
 		case "mathhelp":
-			chan.sendMessage("https://github.com/uklimaschewski/EvalEx"); break;
-		case "pingme":
-			chan.sendMessage(event.getMessageAuthor().asUser().get().getMentionTag()); break;
+			pasted = "https://github.com/uklimaschewski/EvalEx"; break;
+		case "invitebot":
+			new MessageBuilder().setEmbed(new EmbedBuilder().setTitle("Bot Invite Link")
+.setUrl("https://discord.com/api/oauth2/authorize?client_id=747632462191919204&permissions=3263489&redirect_uri=https%3A%2F%2Fdiscord.com%2Fapi%2Foauth2%2Fauthorize&scope=bot"))
+			.send(chan); return;
 		case "nsfwtest":
 			if(sfw.contains(servername)) {
 				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
 				return;
 			}
 			chan.sendMessage("NSFW");
+		}
+		if(pm == 'm') {
+			threads.put(chan, new mt());
+			threads.get(chan).start();
+		}
+		else {
+			chan.sendMessage(pasted);
 		}
 	}
 	static String insult(){//Reddit insulter
@@ -163,71 +193,6 @@ public class Main {
 			threads.get(stchan).interrupt();
 			threads.remove(stchan);
 		}
-	}
-	static void threading(){
-		stop(chan);
-		mt.mode = 0;
-		mt.chan = chan;
-		switch(message) {
-		case "insult":
-			if(sfw.contains(servername)) {
-				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
-				return;
-			}
-			mt.mode = 1; break;
-		case "allah" :
-			mt.spam = allah.toString(); break;
-		case "stop" :
-			stop(chan); return;
-		case "space" :
-			mt.spam = space.toString(); break;
-		case "plagueis" :
-			mt.spam = pastas[0]; break;
-		case "sorry" :
-			mt.spam = pastas[1]; break;
-		case "doctor" :
-			mt.spam = pastas[2]; break;
-		case "kira" :
-			mt.spam = pastas[3]; break;
-		case "pandemonika" :
-			if(sfw.contains(servername)) {
-				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
-				return;
-			}
-			mt.spam = pastas[4]; break;
-		case "navy":
-			mt.spam = pastas[5]; break;
-		case "fitness":
-			mt.spam = pastas[6]; break;
-		case "linux":
-			mt.spam = pastas[7]; break;
-		case "furry":
-			if(sfw.contains(servername)) {
-				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
-				return;
-			}
-			mt.spam = pastas[8]; break;
-		case "help":
-			mt.spam = "https://github.com/rain1598/SpammersHaven"; break;
-		case "mathhelp":
-			mt.spam = "https://github.com/uklimaschewski/EvalEx"; break;
-		case "pingme" :
-			mt.spam = event.getMessageAuthor().asUser().get().getMentionTag(); break;
-		case "cum" :
-			if(sfw.contains(servername)) {
-				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
-				return;
-			}
-			mt.mode = 2; break;
-		case "nsfwtest":
-			if(sfw.contains(servername)) {
-				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
-				return;
-			}
-			mt.spam = "NSFW";
-		}
-		threads.put(chan, new mt());
-		threads.get(chan).start();
 	}
 	static void changeprefix(){
 		if(message.equals("f")) {
@@ -252,7 +217,10 @@ public class Main {
 	static void special() {
 		switch(message) {
 		case "math":
-			chan.sendMessage("Math brought to you by EvalEx.\nNote: % is modulo, not percentage");
+			new MessageBuilder().setEmbed(new EmbedBuilder()
+					.setTitle("Math brought to you by EvalEx")
+					.setDescription("Note: % is modulo, not percentage"))
+			.send(chan);
 			third = 1; break;
 		}
 	}
