@@ -3,8 +3,10 @@ The destructive discord bot
 
 A Javacord port/overhaul of BUP by Cafeepy
 
-Compile instructions: 
-add bot token as Token.txt to the two locations in .gitignore
+Compile instructions:
+
+in Token.txt in the two locations in .gitignore, 
+add "{BotToken}\n{BotName#tag}"
 
 # Debug
 
