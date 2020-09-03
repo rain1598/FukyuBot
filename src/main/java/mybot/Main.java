@@ -78,7 +78,7 @@ public class Main {
 		String[] cmd = eve.getMessageContent().split(" ");
 		chan = eve.getChannel();
 		pre = prefix(eve.getMessageAuthor());
-		servername = event.getServer().get().getName();
+		servername = eve.getServer().get().getName();
 		if(cmd.length>1) message = cmd[1].toLowerCase();
 		event = eve;
 		switch(cmd[0].charAt(pre.length()+1)){
