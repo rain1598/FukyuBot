@@ -5,8 +5,8 @@ A Javacord port/overhaul of BUP by Cafeepy
 
 Compile instructions:
 
-in Token.txt in the two locations in .gitignore, 
-add "{BotToken}\n{BotName#tag}"
+put Token.txt into src/main/resources, 
+and add "{BotToken}\n{BotName#tag}"
 
 # Debug
 
