@@ -12,7 +12,7 @@ add "{BotToken}\n{BotName#tag}"
 
 diexit - exits program
 
-SFWServer String - bans the use of the commands:
+SFW HashSet - bans the use of the commands:
  
  - insult
  - pandemonika
