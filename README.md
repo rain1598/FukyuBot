@@ -40,8 +40,12 @@ p => pastes a copypasta
  - fitness - Fitnessgram Pacer Test copypasta
  - linux - It's GNU/Linux, not linux
  - furry - pastes the original furry copypasta
+ - freeman - pastes president Keemstar's speech from HDTF
  - mathhelp - links to EvalEx's GitHub Page
  - pingme - pings yourself
+ - invitebot - gives a link to invite this bot to another server
+ - invite - creates invite for the current channel of the current server
+ - nsfwtest - checks if the server is nsfw or not
 
 m => spams a copypasta every second
 
