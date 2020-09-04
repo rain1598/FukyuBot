@@ -29,7 +29,7 @@ Default Prefix = f
 p => pastes a copypasta
 
  - allah - pastes the character "﷽" 2000 times
- - space - creates a 1998 line high post
+ - space - creates a 999 line high post
  - insult - pastes a random insult out of a database of 21,795 banned Reddit comments (Reddit moment)
  - sorry - pastes logan paul's apology
  - doctor - the head doctor is 89 years old?
