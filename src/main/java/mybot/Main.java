@@ -8,10 +8,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
-import org.javacord.api.entity.message.MessageAuthor;
 import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.message.Messageable;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
+import org.javacord.api.entity.server.Server;
 import org.javacord.api.entity.server.invite.InviteBuilder;
 import org.javacord.api.event.message.MessageCreateEvent;
 
@@ -23,7 +23,7 @@ public class Main {
 	static BufferedReader badwords = new BufferedReader(new InputStreamReader(load.getResourceAsStream("badwords.txt")));
 	static BufferedReader copy = new BufferedReader(new InputStreamReader(load.getResourceAsStream("copypastas.txt")));
 	static HashMap<Messageable, Thread> threads = new HashMap<Messageable, Thread>();
-	static HashMap<MessageAuthor, String> prefixes = new HashMap<MessageAuthor, String>();
+	static HashMap<Server, String> prefixes = new HashMap<Server, String>();
 	static StringBuilder allah = new StringBuilder();
 	static StringBuilder space = new StringBuilder();
 	static String message;
@@ -56,12 +56,12 @@ public class Main {
 				if(third > 0) {
 					message = event.getMessageContent();
 					chan = event.getChannel();
-					pre = prefix(event.getMessageAuthor());
+					pre = prefix(event.getServer().get());
 					thirdmanager();
 				}
 				else {
-					String check = event.getMessageContent().substring(0, prefix(event.getMessageAuthor()).length()+1);
-					if(check.equals(prefix(event.getMessageAuthor())+"!")) {
+					String check = event.getMessageContent().substring(0, prefix(event.getServer().get()).length()+1);
+					if(check.equals(prefix(event.getServer().get())+"!")) {
 						readmanager(event);
 					}
 					else if(event.getMessageContent().contains("diexit")) {//debug, exits program
@@ -81,7 +81,7 @@ public class Main {
 	static void readmanager(MessageCreateEvent eve){
 		String[] cmd = eve.getMessageContent().split(" ");
 		chan = eve.getChannel();
-		pre = prefix(eve.getMessageAuthor());
+		pre = prefix(eve.getServer().get());
 		servername = eve.getServer().get().getName();
 		if(cmd.length>1) message = cmd[1].toLowerCase();
 		event = eve;
@@ -93,9 +93,9 @@ public class Main {
 		case 'x':special(); break;
 		}
 	}
-	static String prefix(MessageAuthor us) {
+	static String prefix(Server us) {
 		if(prefixes.containsKey(us)) return prefixes.get(us);
-		return "f";
+		return "sh";
 	}
 	static void paste(char pm){
 		String pasted = "";
@@ -177,6 +177,12 @@ public class Main {
 				return;
 			}
 			chan.sendMessage("NSFW");
+		case "bee" :
+			if(pm == 'm') {
+				mt.chan = chan;
+				mt.mode = 3;
+				break;
+			}
 		}
 		if(pm == 'm') {
 			mt.chan = chan;
@@ -206,12 +212,12 @@ public class Main {
 		}
 	}
 	static void changeprefix(){
-		if(message.equals("f")) {
-			prefixes.remove(event.getMessageAuthor());
+		if(message.equals("sh")) {
+			prefixes.remove(event.getServer().get());
 			chan.sendMessage("prefix reset");
 		}
 		else {
-			prefixes.put(event.getMessageAuthor(), message);
+			prefixes.put(event.getServer().get(), message);
 			chan.sendMessage("prefix changed to: "+message);
 		}
 	}
@@ -223,7 +229,9 @@ public class Main {
 		}
 	}
 	static void exp() {
-		chan.sendMessage(new Expression(message).eval().toPlainString());
+		try {
+			chan.sendMessage(new Expression(message).eval().toPlainString());
+		}catch(Exception e) {chan.sendMessage("Syntax invalid");}
 	}
 	static void special() {
 		switch(message) {
@@ -260,6 +268,14 @@ class mt extends Thread{
 				while(true) {
 					String c2 = cum.readLine();
 					if(c2 == null)cum = new BufferedReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream("cum.txt")));
+					ch.sendMessage(c2).join();
+					TimeUnit.SECONDS.sleep(1);		
+				}
+			case 3:
+				BufferedReader bee = new BufferedReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream("bee.txt")));
+				while(true) {
+					String c2 = bee.readLine();
+					if(c2 == null)return;
 					ch.sendMessage(c2).join();
 					TimeUnit.SECONDS.sleep(1);		
 				}
