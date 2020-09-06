@@ -14,8 +14,7 @@ import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.entity.server.Server;
 import org.javacord.api.entity.server.invite.InviteBuilder;
 import org.javacord.api.event.message.MessageCreateEvent;
-
-import com.udojava.evalex.*;
+import com.udojava.evalex.Expression;
 public class Main {
 	static ClassLoader load = Thread.currentThread().getContextClassLoader();
 	static BufferedReader Token = new BufferedReader(new InputStreamReader(load.getResourceAsStream("Token.txt")));
