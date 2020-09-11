@@ -14,7 +14,7 @@ import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.entity.server.Server;
 import org.javacord.api.entity.server.invite.InviteBuilder;
 import org.javacord.api.event.message.MessageCreateEvent;
-import com.udojava.evalex.Expression;
+import org.mariuszgromada.math.mxparser.Expression;
 public class Main {
 	static ClassLoader load = Thread.currentThread().getContextClassLoader();
 	static BufferedReader Token = new BufferedReader(new InputStreamReader(load.getResourceAsStream("Token.txt")));
@@ -160,7 +160,7 @@ public class Main {
 		case "help":
 			pasted = "https://github.com/rain1598/SpammersHaven"; break;
 		case "mathhelp":
-			pasted = "https://github.com/uklimaschewski/EvalEx"; break;
+			pasted = "https://github.com/mariuszgromada/MathParser.org-mXparser#built-in-tokens"; break;
 		case "invitebot":
 			new MessageBuilder().setEmbed(new EmbedBuilder().setTitle("Bot Invite Link")
 .setUrl("https://discord.com/api/oauth2/authorize?client_id=747632462191919204&permissions=3263489&redirect_uri=https%3A%2F%2Fdiscord.com%2Fapi%2Foauth2%2Fauthorize&scope=bot"))
@@ -229,16 +229,17 @@ public class Main {
 	}
 	static void exp() {
 		try {
-			chan.sendMessage(new Expression(message).eval().toPlainString());
+			chan.sendMessage(Double.toString(new Expression(message).calculate()));
 		}catch(Exception e) {chan.sendMessage("Syntax invalid");}
 	}
 	static void special() {
 		switch(message) {
 		case "math":
 			new MessageBuilder().setEmbed(new EmbedBuilder()
-					.setTitle("Math brought to you by EvalEx")
-					.setDescription("Note: % is modulo, not percentage"))
-			.send(chan);
+					.setTitle("Math brought to you by mXparser, from MathParser.org")
+					.setDescription("Read the documentation here")
+					.setUrl("https://github.com/mariuszgromada/MathParser.org-mXparser#built-in-tokens")
+			).send(chan);
 			third = 1; break;
 		}
 	}
