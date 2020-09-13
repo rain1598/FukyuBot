@@ -69,7 +69,7 @@ public class Main {
 						System.exit(0);
 					}
 					else if(sfw.contains(event.getServer().get().getName())){
-						for(String e:event.getMessageContent().split(" ")) {
+						for(String e:event.getMessageContent().toLowerCase().split(" ")) {
 							if(bad.contains(e)) event.getChannel().sendMessage("NO SWEARING on my Christian Discord Server!!!");
 						}
 					}
