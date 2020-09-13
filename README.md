@@ -22,7 +22,7 @@ SFW HashSet - bans the use of the commands:
 # Commands
 {Prefix}!{Type} {Command}
 
-Default Prefix = f
+~~Default~~ Prefix = sh
 
 **Types:**
 
@@ -53,13 +53,13 @@ m => spams a copypasta every second
  - insult - f!p insult but it spams randomized
  - cum - writes the lyrics to Welcome To The Cum Zone and Heir To The Cum Throne line by line
  - stop - alternative way to stop spam
+ - bee - spams the entire bee movie script
  
 x => special functions
 
- - math - does math using EvalEx (for more info and help, please visit https://github.com/uklimaschewski/EvalEx)
+ - math - does math using mXparser (for more info and help, please visit https://github.com/mariuszgromada/MathParser.org-mXparser#built-in-tokens)
 
 s => stops spam
 
-c => changes prefix (1 user 1 prefix)
-
- - f - reset prefix
+~~c => changes prefix~~
+ no more
