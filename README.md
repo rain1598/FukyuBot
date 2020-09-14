@@ -19,7 +19,7 @@ SFW Set - bans the use of the commands:
  - furry
  - cum
 
-When you say a bad word a bible verse will be printed
+When you say a bad word a bible verse will be pasted
 # Commands
 {Prefix}!{Type} {Command}
 
