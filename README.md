@@ -19,7 +19,7 @@ SFW Set - bans the use of the commands:
  - furry
  - cum
 
-When you say a bad word a bible verse will be pasted
+When you say a bad word bible() will be called
 # Commands
 {Prefix}!{Type} {Command}
 
@@ -47,7 +47,7 @@ p => pastes a copypasta
  - invitebot - gives a link to invite this bot to another server
  - invite - creates invite for the current channel of the current server
  - nsfwtest - checks if the server is nsfw or not
- - bible - prints bible verse
+ - bible - pastes a bible verse (KJV)
 
 m => spams a copypasta every second
 
