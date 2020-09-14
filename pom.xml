@@ -23,13 +23,13 @@
 	</dependencies>
 	
 	<groupId>com.github.rain1598</groupId>
-	<version>0.1.3</version>
+	<version>0.4-alpha</version>
 	<name>Spammer's Haven</name>
 	<artifactId>DiscordBot</artifactId>
 	<url>https://github.com/rain1598/SpammersHaven</url>
-	<description>The destructive discord bot, a Maven port/overhaul of BUP by Cafeepy.</description>
+	<description>The destructive discord bot, a Java overhaul of BUP by Cafeepy.</description>
 	<organization>
-		<name>rain1598</name>
+		<name>rain</name>
 		<url>https://github.com/rain1598</url>
 	</organization>
 	<build>
