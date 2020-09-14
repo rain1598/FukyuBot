@@ -12,13 +12,14 @@ and add "{BotToken}\n{BotName#tag}"
 
 diexit - exits program
 
-SFW HashSet - bans the use of the commands:
+SFW Set - bans the use of the commands:
  
  - insult
  - pandemonika
  - furry
  - cum
 
+When you say a bad word a bible verse will be printed
 # Commands
 {Prefix}!{Type} {Command}
 
@@ -46,6 +47,7 @@ p => pastes a copypasta
  - invitebot - gives a link to invite this bot to another server
  - invite - creates invite for the current channel of the current server
  - nsfwtest - checks if the server is nsfw or not
+ - bible - prints bible verse
 
 m => spams a copypasta every second
 
