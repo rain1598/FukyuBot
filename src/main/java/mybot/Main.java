@@ -176,12 +176,19 @@ public class Main {
 				return;
 			}
 			chan.sendMessage("NSFW");
-		case "bee" :
+		case "bee":
 			if(pm == 'm') {
 				mt.chan = chan;
 				mt.mode = 3;
 				break;
 			}
+		case "bible":
+			if(pm == 'm') {
+				mt.chan = chan;
+				mt.mode = 4;
+				break;
+			}
+			pasted = bible(); break;
 		}
 		if(pm == 'm') {
 			mt.chan = chan;
@@ -201,6 +208,16 @@ public class Main {
 			for(int i = 0; i < n; i++) rin.readLine();
 			re = rin.readLine();
 			if(re.length() > 2000)re = re.substring(0, 1999);
+		} catch (IOException e) {}
+		return re;
+	}
+	static String bible(){//bible verse generator
+		String re = "";
+		int n =(((int)(Math.random()*31102))*2);
+		try {
+			rin = new BufferedReader(new InputStreamReader(load.getResourceAsStream("bible.txt")));
+			for(int i = 0; i < n; i++) rin.readLine();
+			re = rin.readLine()+"\n"+rin.readLine();
 		} catch (IOException e) {}
 		return re;
 	}
@@ -277,6 +294,11 @@ class mt extends Thread{
 					String c2 = bee.readLine();
 					if(c2 == null)return;
 					ch.sendMessage(c2).join();
+					TimeUnit.SECONDS.sleep(1);		
+				}
+			case 4:
+				while(true) {
+					ch.sendMessage(Main.bible()).join();
 					TimeUnit.SECONDS.sleep(1);		
 				}
 			}
