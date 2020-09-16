@@ -20,9 +20,14 @@ public class Main {
 	static BufferedReader Token = new BufferedReader(new InputStreamReader(load.getResourceAsStream("Token.txt")));
 	static BufferedReader rin;
 	static BufferedReader badwords = new BufferedReader(new InputStreamReader(load.getResourceAsStream("badwords.txt")));
-	static BufferedReader copy = new BufferedReader(new InputStreamReader(load.getResourceAsStream("copypastas.txt")));
+	static BufferedReader sfwservers = new BufferedReader(new InputStreamReader(load.getResourceAsStream("badwords.txt")));
+	static BufferedReader copy = new BufferedReader(new InputStreamReader(load.getResourceAsStream("sfw.txt")));
+	static BufferedReader wlist = new BufferedReader(new InputStreamReader(load.getResourceAsStream("wlist.txt")));
+	static BufferedReader deflist = new BufferedReader(new InputStreamReader(load.getResourceAsStream("deflist.txt")));
 	static HashMap<Messageable, Thread> threads = new HashMap<Messageable, Thread>();
 	static HashMap<Server, String> prefixes = new HashMap<Server, String>();
+	static HashMap<String, String> dict = new HashMap<String, String>();
+	static HashMap<Messageable, Integer> third = new HashMap<Messageable, Integer>();
 	static StringBuilder allah = new StringBuilder();
 	static StringBuilder space = new StringBuilder();
 	static String message;
@@ -31,9 +36,9 @@ public class Main {
 	static String servername;
 	static String[] pastas = new String[10];
 	static MessageCreateEvent event;
-	static int third = 0;
 	static HashSet<String> bad = new HashSet<String>();
 	static HashSet<String> sfw = new HashSet<String>();
+	static DiscordApi api;
 	
 	public static void main(String[] args) throws IOException {
 		space.append((char)8203);
@@ -42,35 +47,39 @@ public class Main {
 		
 		for(int i = 0; i < 2000; i++) allah.append(((char)65021));//allah
 		for(int i = 0; i < pastas.length; i++)pastas[i] = copy.readLine();
-		for(int i = 0; i < 70; i++)bad.add(badwords.readLine());
-		sfw.add("SSPS");
-		sfw.add("F Y T 2");
+		for(int i = 0; i < 74; i++)bad.add(badwords.readLine());
+		for(int i = 0; i < 2; i++)sfw.add(sfwservers.readLine());
+		for(int i = 0; i < 117528; i++)dict.put(wlist.readLine(), deflist.readLine());
 		
-		DiscordApi api = new DiscordApiBuilder().setToken(Token.readLine()).login().join();
+		api = new DiscordApiBuilder().setToken(Token.readLine()).login().join();
 		System.out.println("Logged in!");
 		
 		String botname = Token.readLine();
-		api.addMessageCreateListener(event -> {
-			if(!event.getMessageAuthor().getDiscriminatedName().equals(botname)){
-				if(third > 0) {
-					message = event.getMessageContent();
-					chan = event.getChannel();
-					pre = prefix(event.getServer().get());
+		api.addMessageCreateListener(eve -> {
+			if(!eve.getMessageAuthor().getDiscriminatedName().equals(botname)){
+				if(!third.containsKey(eve.getChannel())) {
+					third.put(eve.getChannel(), 0);
+				}
+				if(third.get(eve.getChannel()) > 0) {
+					event = eve;
+					message = eve.getMessageContent();
+					chan = eve.getChannel();
+					pre = prefix(eve.getServer().get());
 					thirdmanager();
 				}
 				else {
-					String check = event.getMessageContent().substring(0, prefix(event.getServer().get()).length()+1);
-					if(check.equals(prefix(event.getServer().get())+"!")) {
-						readmanager(event);
+					String check = eve.getMessageContent().substring(0, prefix(eve.getServer().get()).length()+1);
+					if(check.equals(prefix(eve.getServer().get())+"!")) {
+						readmanager(eve);
 					}
-					else if(event.getMessageContent().contains("diexit")) {//debug, exits program
-						event.getChannel().sendMessage("Going Offline...");
+					else if(eve.getMessageContent().contains("diexit")) {//debug, exits program
+						eve.getChannel().sendMessage("Going Offline...");
 						api.disconnect();
 						System.exit(0);
 					}
-					else if(sfw.contains(event.getServer().get().getName())){
-						for(String e:event.getMessageContent().toLowerCase().split(" ")) {
-							if(bad.contains(e)) event.getChannel().sendMessage(bible());
+					else if(sfw.contains(eve.getServer().get().getName())){
+						for(String e:eve.getMessageContent().toLowerCase().split(" ")) {
+							if(bad.contains(e)) eve.getChannel().sendMessage(bible());
 						}
 					}
 				}
@@ -157,6 +166,8 @@ public class Main {
 				break;
 			}
 			return;
+		case "bruh":
+			pasted = "bruh"; break;
 		case "help":
 			pasted = "https://github.com/rain1598/SpammersHaven"; break;
 		case "mathhelp":
@@ -238,11 +249,26 @@ public class Main {
 		}
 	}
 	static void thirdmanager() {
-		int rd = third;
-		third = 0;
-		switch(rd) {
-		case 1:exp();break;
+		if(message.equals("diexit")){
+			chan.sendMessage("Going Offline...");
+			api.disconnect();
+			System.exit(0);
 		}
+		if(message.equals("taskend")|message.equals(prefixes.get(event.getServer().get())+"!s")) {
+			chan.sendMessage("Task Ended");
+			third.put(chan, 0);
+			return;
+		}
+		switch(third.get(event.getChannel())) {
+		case 1:exp();break;
+		case 2:dictionary();break;
+		}
+	}
+	static void dictionary() {
+		try {
+			String[] defs = dict.get(message.toLowerCase()).split("#");
+			for(int i = 0; i < defs.length; i++) chan.sendMessage(defs[i]);
+		}catch(Exception e) {chan.sendMessage("Word not found");}
 	}
 	static void exp() {
 		try {
@@ -257,7 +283,13 @@ public class Main {
 					.setDescription("Read the documentation here")
 					.setUrl("https://github.com/mariuszgromada/MathParser.org-mXparser#built-in-tokens")
 			).send(chan);
-			third = 1; break;
+			third.put(chan, 1); break;
+		case "dict":
+			new MessageBuilder().setEmbed(new EmbedBuilder()
+					.setTitle("Dictionary Brought to you by OPTED")
+					.setDescription("Please don't use obvious plurals\n(Cacti still works)")
+			).send(chan);
+			third.put(chan, 2); break;
 		}
 	}
 }
