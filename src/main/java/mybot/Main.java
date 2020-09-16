@@ -56,43 +56,43 @@ public class Main {
 		
 		String botname = Token.readLine();
 		api.addMessageCreateListener(eve -> {
-			if(!eve.getMessageAuthor().getDiscriminatedName().equals(botname)){
-				if(!third.containsKey(eve.getChannel())) {
-					third.put(eve.getChannel(), 0);
+			event = eve;
+			if(!event.getMessageAuthor().getDiscriminatedName().equals(botname)){
+				if(!third.containsKey(event.getChannel())) {
+					third.put(event.getChannel(), 0);
 				}
-				if(third.get(eve.getChannel()) > 0) {
+				if(third.get(event.getChannel()) > 0) {
 					event = eve;
-					message = eve.getMessageContent();
-					chan = eve.getChannel();
-					pre = prefix(eve.getServer().get());
+					message = event.getMessageContent();
+					chan = event.getChannel();
+					pre = prefix(event.getServer().get());
 					thirdmanager();
 				}
 				else {
-					String check = eve.getMessageContent().substring(0, prefix(eve.getServer().get()).length()+1);
-					if(check.equals(prefix(eve.getServer().get())+"!")) {
-						readmanager(eve);
+					String check = event.getMessageContent().substring(0, prefix(event.getServer().get()).length()+1);
+					if(check.equals(prefix(event.getServer().get())+"!")) {
+						readmanager();
 					}
-					else if(eve.getMessageContent().contains("diexit")) {//debug, exits program
-						eve.getChannel().sendMessage("Going Offline...");
+					else if(event.getMessageContent().contains("diexit")) {//debug, exits program
+						event.getChannel().sendMessage("Going Offline...");
 						api.disconnect();
 						System.exit(0);
 					}
-					else if(sfw.contains(eve.getServer().get().getName())){
-						for(String e:eve.getMessageContent().toLowerCase().split(" ")) {
-							if(bad.contains(e)) eve.getChannel().sendMessage(bible());
+					else if(sfw.contains(event.getServer().get().getName())){
+						for(String e:event.getMessageContent().toLowerCase().split(" ")) {
+							if(bad.contains(e)) event.getChannel().sendMessage(bible());
 						}
 					}
 				}
 			}
 		});
 	}
-	static void readmanager(MessageCreateEvent eve){
-		String[] cmd = eve.getMessageContent().split(" ");
-		chan = eve.getChannel();
-		pre = prefix(eve.getServer().get());
-		servername = eve.getServer().get().getName();
+	static void readmanager(){
+		String[] cmd = event.getMessageContent().split(" ");
+		chan = event.getChannel();
+		pre = prefix(event.getServer().get());
+		servername = event.getServer().get().getName();
 		if(cmd.length>1) message = cmd[1].toLowerCase();
-		event = eve;
 		switch(cmd[0].charAt(pre.length()+1)){
 		case 'p':paste('p'); break;
 		case 'm':paste('m'); break;
