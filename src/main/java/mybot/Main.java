@@ -50,11 +50,16 @@ public class Main {
 		for(int i = 0; i < 74; i++)bad.add(badwords.readLine());
 		for(int i = 0; i < 2; i++)sfw.add(sfwservers.readLine());
 		for(int i = 0; i < 117528; i++)dict.put(wlist.readLine(), deflist.readLine());
+		badwords.close();
+		sfwservers.close();
+		wlist.close();
+		deflist.close();
 		
 		api = new DiscordApiBuilder().setToken(Token.readLine()).login().join();
 		System.out.println("Logged in!");
-		
 		String botname = Token.readLine();
+		Token.close();
+		
 		api.addMessageCreateListener(eve -> {
 			event = eve;
 			if(!event.getMessageAuthor().getDiscriminatedName().equals(botname)){
@@ -218,6 +223,7 @@ public class Main {
 			rin = new BufferedReader(new InputStreamReader(load.getResourceAsStream("redditmoment.txt")));
 			for(int i = 0; i < n; i++) rin.readLine();
 			re = rin.readLine();
+			rin.close();
 			if(re.length() > 2000)re = re.substring(0, 1999);
 		} catch (IOException e) {}
 		return re;
