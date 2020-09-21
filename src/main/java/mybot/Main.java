@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.javacord.api.DiscordApi;
@@ -17,17 +18,17 @@ import org.javacord.api.event.message.MessageCreateEvent;
 import org.mariuszgromada.math.mxparser.Expression;
 public class Main {
 	static ClassLoader load = Thread.currentThread().getContextClassLoader();
-	static BufferedReader Token = new BufferedReader(new InputStreamReader(load.getResourceAsStream("Token.txt")));
+	static BufferedReader Token = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("Token.txt"))));
 	static BufferedReader rin;
-	static BufferedReader badwords = new BufferedReader(new InputStreamReader(load.getResourceAsStream("badwords.txt")));
-	static BufferedReader sfwservers = new BufferedReader(new InputStreamReader(load.getResourceAsStream("badwords.txt")));
-	static BufferedReader copy = new BufferedReader(new InputStreamReader(load.getResourceAsStream("sfw.txt")));
-	static BufferedReader wlist = new BufferedReader(new InputStreamReader(load.getResourceAsStream("wlist.txt")));
-	static BufferedReader deflist = new BufferedReader(new InputStreamReader(load.getResourceAsStream("deflist.txt")));
-	static HashMap<Messageable, Thread> threads = new HashMap<Messageable, Thread>();
-	static HashMap<Server, String> prefixes = new HashMap<Server, String>();
-	static HashMap<String, String> dict = new HashMap<String, String>();
-	static HashMap<Messageable, Integer> third = new HashMap<Messageable, Integer>();
+	static BufferedReader badwords = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("badwords.txt"))));
+	static BufferedReader sfwservers = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("badwords.txt"))));
+	static BufferedReader copy = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("sfw.txt"))));
+	static BufferedReader wlist = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("wlist.txt"))));
+	static BufferedReader deflist = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("deflist.txt"))));
+	static HashMap<Messageable, Thread> threads = new HashMap<>();
+	static HashMap<Server, String> prefixes = new HashMap<>();
+	static HashMap<String, String> dict = new HashMap<>();
+	static HashMap<Messageable, Integer> third = new HashMap<>();
 	static StringBuilder allah = new StringBuilder();
 	static StringBuilder space = new StringBuilder();
 	static String message;
@@ -36,15 +37,15 @@ public class Main {
 	static String servername;
 	static String[] pastas = new String[10];
 	static MessageCreateEvent event;
-	static HashSet<String> bad = new HashSet<String>();
-	static HashSet<String> sfw = new HashSet<String>();
+	static HashSet<String> bad = new HashSet<>();
+	static HashSet<String> sfw = new HashSet<>();
 	static DiscordApi api;
-	
+
 	public static void main(String[] args) throws IOException {
 		space.append((char)8203);
 		for(int i = 0; i < 999; i++) space.append("\n");
 		space.append((char)8203);//spaces
-		
+
 		for(int i = 0; i < 2000; i++) allah.append(((char)65021));//allah
 		for(int i = 0; i < pastas.length; i++)pastas[i] = copy.readLine();
 		for(int i = 0; i < 74; i++)bad.add(badwords.readLine());
@@ -54,12 +55,12 @@ public class Main {
 		sfwservers.close();
 		wlist.close();
 		deflist.close();
-		
+
 		api = new DiscordApiBuilder().setToken(Token.readLine()).login().join();
 		System.out.println("Logged in!");
 		String botname = Token.readLine();
 		Token.close();
-		
+
 		api.addMessageCreateListener(eve -> {
 			event = eve;
 			if(!event.getMessageAuthor().getDiscriminatedName().equals(botname)){
@@ -220,22 +221,22 @@ public class Main {
 		String re = "";
 		int n = (int) (Math.random()*21795);
 		try {
-			rin = new BufferedReader(new InputStreamReader(load.getResourceAsStream("redditmoment.txt")));
+			rin = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("redditmoment.txt"))));
 			for(int i = 0; i < n; i++) rin.readLine();
 			re = rin.readLine();
 			rin.close();
 			if(re.length() > 2000)re = re.substring(0, 1999);
-		} catch (IOException e) {}
+		} catch (IOException ignored) {}
 		return re;
 	}
 	static String bible(){//bible verse generator
 		String re = "";
 		int n =(((int)(Math.random()*31102))*2);
 		try {
-			rin = new BufferedReader(new InputStreamReader(load.getResourceAsStream("bible.txt")));
+			rin = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("bible.txt"))));
 			for(int i = 0; i < n; i++) rin.readLine();
 			re = rin.readLine()+"\n"+rin.readLine();
-		} catch (IOException e) {}
+		} catch (IOException ignored) {}
 		return re;
 	}
 	static void stop(Messageable stchan) {//stops multithreading
@@ -311,38 +312,37 @@ class mt extends Thread{
 			case 0:
 				while(true) {
 					ch.sendMessage(sp).join();
-					TimeUnit.SECONDS.sleep(1);		
+					TimeUnit.SECONDS.sleep(1);
 				}
 			case 1:
 				while(true) {
 					ch.sendMessage(Main.insult()).join();
-					TimeUnit.SECONDS.sleep(1);		
+					TimeUnit.SECONDS.sleep(1);
 				}
 			case 2:
-				BufferedReader cum = new BufferedReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream("cum.txt")));
+				BufferedReader cum = new BufferedReader(new InputStreamReader(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("cum.txt"))));
 				while(true) {
 					String c2 = cum.readLine();
-					if(c2 == null)cum = new BufferedReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream("cum.txt")));
+					if(c2 == null)cum = new BufferedReader(new InputStreamReader(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("cum.txt"))));
 					ch.sendMessage(c2).join();
-					TimeUnit.SECONDS.sleep(1);		
+					TimeUnit.SECONDS.sleep(1);
 				}
 			case 3:
-				BufferedReader bee = new BufferedReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream("bee.txt")));
+				BufferedReader bee = new BufferedReader(new InputStreamReader(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("bee.txt"))));
 				while(true) {
 					String c2 = bee.readLine();
 					if(c2 == null)return;
 					ch.sendMessage(c2).join();
-					TimeUnit.SECONDS.sleep(1);		
+					TimeUnit.SECONDS.sleep(1);
 				}
 			case 4:
 				while(true) {
 					ch.sendMessage(Main.bible()).join();
-					TimeUnit.SECONDS.sleep(1);		
+					TimeUnit.SECONDS.sleep(1);
 				}
 			}
 		} catch (InterruptedException e) {
 			ch.sendMessage("Spam Stopped");
-			return;
 		} catch (IOException e) {}
 	}
 }
