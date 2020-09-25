@@ -12,7 +12,6 @@ import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.message.Messageable;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
-import org.javacord.api.entity.server.Server;
 import org.javacord.api.entity.server.invite.InviteBuilder;
 import org.javacord.api.event.message.MessageCreateEvent;
 import org.mariuszgromada.math.mxparser.Expression;
@@ -21,19 +20,17 @@ public class Main {
 	static BufferedReader Token = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("Token.txt"))));
 	static BufferedReader rin;
 	static BufferedReader badwords = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("badwords.txt"))));
-	static BufferedReader sfwservers = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("badwords.txt"))));
-	static BufferedReader copy = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("sfw.txt"))));
+	static BufferedReader sfwservers = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("sfw.txt"))));
+	static BufferedReader copy = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("copypastas.txt"))));
 	static BufferedReader wlist = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("wlist.txt"))));
 	static BufferedReader deflist = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("deflist.txt"))));
 	static HashMap<Messageable, Thread> threads = new HashMap<>();
-	static HashMap<Server, String> prefixes = new HashMap<>();
 	static HashMap<String, String> dict = new HashMap<>();
 	static HashMap<Messageable, Integer> third = new HashMap<>();
 	static StringBuilder allah = new StringBuilder();
 	static StringBuilder space = new StringBuilder();
 	static String message;
 	static Messageable chan;
-	static String pre;
 	static String servername;
 	static String[] pastas = new String[10];
 	static MessageCreateEvent event;
@@ -71,12 +68,11 @@ public class Main {
 					event = eve;
 					message = event.getMessageContent();
 					chan = event.getChannel();
-					pre = prefix(event.getServer().get());
 					thirdmanager();
 				}
 				else {
-					String check = event.getMessageContent().substring(0, prefix(event.getServer().get()).length()+1);
-					if(check.equals(prefix(event.getServer().get())+"!")) {
+					String check = event.getMessageContent().substring(0, 3);
+					if(check.equals("sh!")) {
 						readmanager();
 					}
 					else if(event.getMessageContent().contains("diexit")) {//debug, exits program
@@ -96,20 +92,14 @@ public class Main {
 	static void readmanager(){
 		String[] cmd = event.getMessageContent().split(" ");
 		chan = event.getChannel();
-		pre = prefix(event.getServer().get());
-		servername = event.getServer().get().getName();
+		if(event.getServer().isPresent()){servername = event.getServer().get().getName();}
 		if(cmd.length>1) message = cmd[1].toLowerCase();
-		switch(cmd[0].charAt(pre.length()+1)){
+		switch(cmd[0].charAt(3)){
 		case 'p':paste('p'); break;
 		case 'm':paste('m'); break;
-		case 'c':changeprefix(); break;
 		case 's':stop(chan); break;
 		case 'x':special(); break;
 		}
-	}
-	static String prefix(Server us) {
-		if(prefixes.containsKey(us)) return prefixes.get(us);
-		return "sh";
 	}
 	static void paste(char pm){
 		String pasted = "";
@@ -245,23 +235,13 @@ public class Main {
 			threads.remove(stchan);
 		}
 	}
-	static void changeprefix(){
-		if(message.equals("sh")) {
-			prefixes.remove(event.getServer().get());
-			chan.sendMessage("prefix reset");
-		}
-		else {
-			prefixes.put(event.getServer().get(), message);
-			chan.sendMessage("prefix changed to: "+message);
-		}
-	}
 	static void thirdmanager() {
 		if(message.equals("diexit")){
 			chan.sendMessage("Going Offline...");
 			api.disconnect();
 			System.exit(0);
 		}
-		if(message.equals("taskend")|message.equals(prefixes.get(event.getServer().get())+"!s")) {
+		if(message.equals("taskend")|message.equals("sh!s")) {
 			chan.sendMessage("Task Ended");
 			third.put(chan, 0);
 			return;
@@ -274,7 +254,7 @@ public class Main {
 	static void dictionary() {
 		try {
 			String[] defs = dict.get(message.toLowerCase()).split("#");
-			for(int i = 0; i < defs.length; i++) chan.sendMessage(defs[i]);
+			for (String e : defs) chan.sendMessage(e);
 		}catch(Exception e) {chan.sendMessage("Word not found");}
 	}
 	static void exp() {
@@ -343,6 +323,6 @@ class mt extends Thread{
 			}
 		} catch (InterruptedException e) {
 			ch.sendMessage("Spam Stopped");
-		} catch (IOException e) {}
+		} catch (IOException ignored) {}
 	}
 }
