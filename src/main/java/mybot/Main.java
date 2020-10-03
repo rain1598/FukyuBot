@@ -15,6 +15,7 @@ import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.entity.server.invite.InviteBuilder;
 import org.javacord.api.event.message.MessageCreateEvent;
 import org.mariuszgromada.math.mxparser.Expression;
+
 public class Main {
 	static ClassLoader load = Thread.currentThread().getContextClassLoader();
 	static BufferedReader Token = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("Token.txt"))));
@@ -71,7 +72,11 @@ public class Main {
 					thirdmanager();
 				}
 				else {
-					String check = event.getMessageContent().substring(0, 3);
+					if(event.getMessageContent().length() < 3 &&(event.getMessageContent().toLowerCase().equals("ok")
+							|| event.getMessageContent().toLowerCase().equals("k"))){
+						event.getMessage().delete();
+					}
+					String check = event.getMessageContent().toLowerCase().substring(0, 3);
 					if(check.equals("sh!")) {
 						readmanager();
 					}
