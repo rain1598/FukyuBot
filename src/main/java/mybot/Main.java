@@ -17,19 +17,12 @@ import org.javacord.api.event.message.MessageCreateEvent;
 import org.mariuszgromada.math.mxparser.Expression;
 
 public class Main {
+	static BufferedReader reader;
 	static ClassLoader load = Thread.currentThread().getContextClassLoader();
-	static BufferedReader Token = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("Token.txt"))));
-	static BufferedReader rin;
-	static BufferedReader badwords = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("badwords.txt"))));
-	static BufferedReader sfwservers = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("sfw.txt"))));
-	static BufferedReader copy = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("copypastas.txt"))));
-	static BufferedReader wlist = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("wlist.txt"))));
-	static BufferedReader deflist = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("deflist.txt"))));
+	static BufferedReader SAT = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("SSAT.txt"))));
 	static HashMap<Messageable, Thread> threads = new HashMap<>();
-	static HashMap<String, String> dict = new HashMap<>();
+	static HashMap<String, Integer> dict = new HashMap<>();
 	static HashMap<Messageable, Integer> third = new HashMap<>();
-	static StringBuilder allah = new StringBuilder();
-	static StringBuilder space = new StringBuilder();
 	static String message;
 	static Messageable chan;
 	static String servername;
@@ -37,57 +30,53 @@ public class Main {
 	static MessageCreateEvent event;
 	static HashSet<String> bad = new HashSet<>();
 	static HashSet<String> sfw = new HashSet<>();
+	static String botname = "";
 	static DiscordApi api;
 
 	public static void main(String[] args) throws IOException {
-		space.append((char)8203);
-		for(int i = 0; i < 999; i++) space.append("\n");
-		space.append((char)8203);//spaces
+		reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("copypastas.txt"))));
+		for(int i = 0; i < pastas.length; i++)pastas[i] = reader.readLine();
+		reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("badwords.txt"))));
+		for(int i = 0; i < 74; i++)bad.add(reader.readLine());
+		reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("sfw.txt"))));
+		for(int i = 0; i < 2; i++)sfw.add(reader.readLine());
+		reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("wlist.txt"))));
+		for(int i = 0; i < 117528; i++)dict.put(reader.readLine(), i);
+		reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("Token.txt"))));
 
-		for(int i = 0; i < 2000; i++) allah.append(((char)65021));//allah
-		for(int i = 0; i < pastas.length; i++)pastas[i] = copy.readLine();
-		for(int i = 0; i < 74; i++)bad.add(badwords.readLine());
-		for(int i = 0; i < 2; i++)sfw.add(sfwservers.readLine());
-		for(int i = 0; i < 117528; i++)dict.put(wlist.readLine(), deflist.readLine());
-		badwords.close();
-		sfwservers.close();
-		wlist.close();
-		deflist.close();
-
-		api = new DiscordApiBuilder().setToken(Token.readLine()).login().join();
+		api = new DiscordApiBuilder().setToken(reader.readLine()).login().join();
 		System.out.println("Logged in!");
-		String botname = Token.readLine();
-		Token.close();
-
+		botname = reader.readLine();
+		reader.close();
+		listener();
+	}
+	static void listener(){
 		api.addMessageCreateListener(eve -> {
 			event = eve;
-			if(!event.getMessageAuthor().getDiscriminatedName().equals(botname)){
-				if(!third.containsKey(event.getChannel())) {
-					third.put(event.getChannel(), 0);
+			message = event.getMessageContent().toLowerCase();
+			chan = event.getChannel();
+			if(event.getServer().isPresent()){servername = event.getServer().get().getName();}
+			else servername = null;
+			if(!event.getMessageAuthor().getDiscriminatedName().equals(botname)) {
+				if (!third.containsKey(chan)) {
+					third.put(chan, 0);
 				}
-				if(third.get(event.getChannel()) > 0) {
-					event = eve;
+				if (third.get(chan) > 0) {
 					message = event.getMessageContent();
-					chan = event.getChannel();
 					thirdmanager();
-				}
-				else {
-					if(event.getMessageContent().length() < 3 &&(event.getMessageContent().toLowerCase().equals("ok")
-							|| event.getMessageContent().toLowerCase().equals("k"))){
+				} else {
+					if (message.length() < 3 && (message.equals("ok") || message.equals("k"))) {
 						event.getMessage().delete();
 					}
-					String check = event.getMessageContent().toLowerCase().substring(0, 3);
-					if(check.equals("sh!")) {
+					String check = message.substring(0, 3);
+					if (check.equals("sh!")) {
 						readmanager();
-					}
-					else if(event.getMessageContent().contains("diexit")) {//debug, exits program
-						event.getChannel().sendMessage("Going Offline...");
-						api.disconnect();
+					} else if (message.contains("diexit")) {//debug, exits program
+						chan.sendMessage("Going Offline...");
 						System.exit(0);
-					}
-					else if(sfw.contains(event.getServer().get().getName())){
-						for(String e:event.getMessageContent().toLowerCase().split(" ")) {
-							if(bad.contains(e)) event.getChannel().sendMessage(bible());
+					} else if (sfw.contains(servername)) {
+						for (String e : message.split(" ")) {
+							if (bad.contains(e)) chan.sendMessage(bible());
 						}
 					}
 				}
@@ -95,9 +84,7 @@ public class Main {
 		});
 	}
 	static void readmanager(){
-		String[] cmd = event.getMessageContent().split(" ");
-		chan = event.getChannel();
-		if(event.getServer().isPresent()){servername = event.getServer().get().getName();}
+		String[] cmd = message.split(" ");
 		if(cmd.length>1) message = cmd[1].toLowerCase();
 		switch(cmd[0].charAt(3)){
 		case 'p':paste('p'); break;
@@ -120,12 +107,27 @@ public class Main {
 				break;
 			}
 			pasted = insult(); break;
+		case "ssat":
+			if(pm == 'm') {
+				mt.chan = chan;
+				mt.mode = 1;
+				break;
+			}
+				pasted = ssat(); break;
 		case "allah" :
+			StringBuilder allah = new StringBuilder();
+			for(int i = 0; i < 2000; i++) allah.append(((char)65021));
 			pasted = allah.toString(); break;
 		case "stop" :
 			stop(chan); return;
 		case "space" :
-			pasted = space.toString(); break;
+			StringBuilder space = new StringBuilder();
+			space.append((char)8203);
+			for(int i = 0; i < 999; i++) space.append("\n");
+			space.append((char)8203);
+			pasted = space.toString();
+			space = null;
+			break;
 		case "plagueis" :
 			pasted = pastas[0]; break;
 		case "sorry" :
@@ -208,18 +210,16 @@ public class Main {
 			threads.put(chan, new mt());
 			threads.get(chan).start();
 		}
-		else {
-			chan.sendMessage(pasted);
-		}
+		else chan.sendMessage(pasted);
 	}
 	static String insult(){//Reddit insulter
 		String re = "";
 		int n = (int) (Math.random()*21795);
 		try {
-			rin = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("redditmoment.txt"))));
-			for(int i = 0; i < n; i++) rin.readLine();
-			re = rin.readLine();
-			rin.close();
+			reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("redditmoment.txt"))));
+			for(int i = 0; i < n; i++) reader.readLine();
+			re = reader.readLine();
+			reader.close();
 			if(re.length() > 2000)re = re.substring(0, 1999);
 		} catch (IOException ignored) {}
 		return re;
@@ -228,9 +228,10 @@ public class Main {
 		String re = "";
 		int n =(((int)(Math.random()*31102))*2);
 		try {
-			rin = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("bible.txt"))));
-			for(int i = 0; i < n; i++) rin.readLine();
-			re = rin.readLine()+"\n"+rin.readLine();
+			reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("bible.txt"))));
+			for(int i = 0; i < n; i++) reader.readLine();
+			re = reader.readLine()+"\n"+reader.readLine();
+			reader.close();
 		} catch (IOException ignored) {}
 		return re;
 	}
@@ -257,10 +258,15 @@ public class Main {
 		}
 	}
 	static void dictionary() {
+		reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("deflist.txt"))));
 		try {
-			String[] defs = dict.get(message.toLowerCase()).split("#");
-			for (String e : defs) chan.sendMessage(e);
-		}catch(Exception e) {chan.sendMessage("Word not found");}
+			int line = dict.get(message);
+			for(int i = 0; i < line; i++)reader.readLine();
+			for(String e:reader.readLine().split("#")){
+				chan.sendMessage(e);
+			}
+			reader.close();
+		}catch(Exception NullPointerException) {chan.sendMessage("Word not found");}
 	}
 	static void exp() {
 		try {
@@ -284,11 +290,25 @@ public class Main {
 			third.put(chan, 2); break;
 		}
 	}
+	static String ssat() {
+		String re = "";
+		int n = (int) (Math.random()*2001);
+		try {
+			reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("SSAT.txt"))));
+			for(int i = 0; i < n*2; i++) reader.readLine();
+			String word = reader.readLine();
+			String def = reader.readLine();
+			re = word+"\n"+def;
+			reader.close();
+		} catch (IOException ignored) {}
+		return re;
+	}
 }
 class mt extends Thread{
 	public static String spam;
 	public static Messageable chan;
 	public static int mode;
+	static ClassLoader load = Thread.currentThread().getContextClassLoader();
 	public void run() {
 		String sp = spam;
 		Messageable ch = chan;
@@ -305,15 +325,15 @@ class mt extends Thread{
 					TimeUnit.SECONDS.sleep(1);
 				}
 			case 2:
-				BufferedReader cum = new BufferedReader(new InputStreamReader(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("cum.txt"))));
+				BufferedReader cum = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("cum.txt"))));
 				while(true) {
 					String c2 = cum.readLine();
-					if(c2 == null)cum = new BufferedReader(new InputStreamReader(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("cum.txt"))));
+					if(c2 == null)cum = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("cum.txt"))));
 					ch.sendMessage(c2).join();
 					TimeUnit.SECONDS.sleep(1);
 				}
 			case 3:
-				BufferedReader bee = new BufferedReader(new InputStreamReader(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("bee.txt"))));
+				BufferedReader bee = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("bee.txt"))));
 				while(true) {
 					String c2 = bee.readLine();
 					if(c2 == null)return;

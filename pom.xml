@@ -23,7 +23,7 @@
 	</dependencies>
 	
 	<groupId>com.github.rain1598</groupId>
-	<version>0.6</version>
+	<version>v0.6</version>
 	<name>Spammer's Haven</name>
 	<artifactId>DiscordBot</artifactId>
 	<url>https://github.com/rain1598/SpammersHaven</url>
