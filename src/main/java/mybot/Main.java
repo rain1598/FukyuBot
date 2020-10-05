@@ -13,7 +13,9 @@ import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.message.Messageable;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
+import org.javacord.api.entity.server.Server;
 import org.javacord.api.entity.server.invite.InviteBuilder;
+import org.javacord.api.entity.user.User;
 import org.javacord.api.event.message.MessageCreateEvent;
 import org.mariuszgromada.math.mxparser.Expression;
 //fix multithreading!!!
@@ -53,16 +55,16 @@ public class Main {
 	}
 	static void listener(){
 		api.addMessageCreateListener(eve -> {
-			if (!third.containsKey(chan)) third.put(chan, 0);
 			event = eve;
 			message = event.getMessageContent().toLowerCase();
 			chan = event.getChannel();
 			servername = event.getServer().isPresent() ? event.getServer().get().getName():null;
-			if(!event.getMessageAuthor().getDiscriminatedName().equals(botname)) {
+			if(!event.getMessageAuthor().isYourself()) {
 				if (message.contains("diexit")) {//debug, exits program
 					chan.sendMessage("Going Offline...");
 					System.exit(0);
 				}
+				if (!third.containsKey(chan)) third.put(chan, 0);
 				if (third.get(chan) > 0) {
 					message = event.getMessageContent();
 					thirdmanager();
@@ -108,7 +110,7 @@ public class Main {
 		case "ssat":
 			if(pm == 'm') {
 				mt.chan = chan;
-				mt.mode = 1;
+				mt.mode = 5;
 				break;
 			}
 			pasted = ssat(); break;
@@ -249,6 +251,7 @@ public class Main {
 		switch(third.get(event.getChannel())) {
 		case 1:exp();break;
 		case 2:dictionary();break;
+		case 3:dm();break;
 		}
 	}
 	static void dictionary() {
@@ -284,6 +287,12 @@ public class Main {
 					.setDescription("Please don't use obvious plurals\n(Cacti still works)")
 			).send(chan);
 			third.put(chan, 2); break;
+		case "dm":
+			new MessageBuilder().setEmbed(new EmbedBuilder()
+					.setTitle("DM anyone you want")
+					.setDescription("Use at your own risk")
+			).send(chan);
+			third.put(chan, 3); break;
 		}
 	}
 	static String ssat() {
@@ -299,6 +308,25 @@ public class Main {
 		} catch (IOException ignored) {}
 		return re;
 	}
+	static void dm(){
+		String me = message.split(" ")[0];
+		User target = null;
+		for(Server e:api.getServers()){
+			for(User ee:e.getMembers()){
+				System.out.println(ee.getDiscriminatedName());
+			}
+			target = e.getMemberByDiscriminatedName(me).isPresent() ? e.getMemberByDiscriminatedName(me).get():null;
+			if(target != null)break;
+		}
+		if(target != null){
+			StringBuilder output = new StringBuilder();
+			String[] mess = message.split(" ");
+			for(int i = 1; i < mess.length-1; i++) {
+				output.append(mess[i]);
+			}
+			target.sendMessage(output.toString());
+		}
+	}
 }
 class mt extends Thread{
 	public static String spam;
@@ -308,22 +336,21 @@ class mt extends Thread{
 	public void run() {
 		String sp = spam;
 		Messageable ch = chan;
-		boolean stop = false;
 		try {
 			switch(mode) {
 			case 0:
-				while(!stop) {
+				while(true) {
 					ch.sendMessage(sp).join();
 					TimeUnit.SECONDS.sleep(1);
 				}
 			case 1:
-				while(!stop) {
+				while(true) {
 					ch.sendMessage(Main.insult()).join();
 					TimeUnit.SECONDS.sleep(1);
 				}
 			case 2:
 				BufferedReader cum = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("cum.txt"))));
-				while(!stop) {
+				while(true) {
 					String c2 = cum.readLine();
 					if(c2 == null)cum = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("cum.txt"))));
 					ch.sendMessage(c2).join();
@@ -331,25 +358,24 @@ class mt extends Thread{
 				}
 			case 3:
 				BufferedReader bee = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("bee.txt"))));
-				while(!stop) {
+				while(true) {
 					String c2 = bee.readLine();
 					if(c2 == null)return;
 					ch.sendMessage(c2).join();
 					TimeUnit.SECONDS.sleep(1);
 				}
 			case 4:
-				while(!stop) {
+				while(true) {
 					ch.sendMessage(Main.bible()).join();
 					TimeUnit.SECONDS.sleep(1);
 				}
 			case 5:
-				while(!stop) {
+				while(true) {
 					ch.sendMessage(Main.ssat()).join();
 					TimeUnit.SECONDS.sleep(1);
 				}
 			}
 		} catch (Exception ignored) {}
 		chan.sendMessage("Spam Stopped");
-		stop = true;
 	}
 }
