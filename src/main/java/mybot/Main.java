@@ -2,6 +2,7 @@ package mybot;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
@@ -15,35 +16,35 @@ import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.entity.server.invite.InviteBuilder;
 import org.javacord.api.event.message.MessageCreateEvent;
 import org.mariuszgromada.math.mxparser.Expression;
-
+//fix multithreading!!!
 public class Main {
 	static BufferedReader reader;
 	static ClassLoader load = Thread.currentThread().getContextClassLoader();
-	static BufferedReader SAT = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("SSAT.txt"))));
 	static HashMap<Messageable, Thread> threads = new HashMap<>();
 	static HashMap<String, Integer> dict = new HashMap<>();
 	static HashMap<Messageable, Integer> third = new HashMap<>();
 	static String message;
 	static Messageable chan;
 	static String servername;
-	static String[] pastas = new String[10];
 	static MessageCreateEvent event;
-	static HashSet<String> bad = new HashSet<>();
-	static HashSet<String> sfw = new HashSet<>();
 	static String botname = "";
 	static DiscordApi api;
 
+	static ArrayList<String> pastas = new ArrayList<>();
+	static HashSet<String> bad = new HashSet<>();
+	static HashSet<String> sfw = new HashSet<>();
+	
 	public static void main(String[] args) throws IOException {
 		reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("copypastas.txt"))));
-		for(int i = 0; i < pastas.length; i++)pastas[i] = reader.readLine();
+		for(String s = reader.readLine(); s != null; s = reader.readLine())pastas.add(s);
 		reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("badwords.txt"))));
-		for(int i = 0; i < 74; i++)bad.add(reader.readLine());
+		for(String s = reader.readLine(); s != null; s = reader.readLine())bad.add(s);
 		reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("sfw.txt"))));
-		for(int i = 0; i < 2; i++)sfw.add(reader.readLine());
+		for(String s = reader.readLine(); s != null; s = reader.readLine())sfw.add(s);
 		reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("wlist.txt"))));
 		for(int i = 0; i < 117528; i++)dict.put(reader.readLine(), i);
 		reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("Token.txt"))));
-
+		
 		api = new DiscordApiBuilder().setToken(reader.readLine()).login().join();
 		System.out.println("Logged in!");
 		botname = reader.readLine();
@@ -52,33 +53,30 @@ public class Main {
 	}
 	static void listener(){
 		api.addMessageCreateListener(eve -> {
+			if (!third.containsKey(chan)) third.put(chan, 0);
 			event = eve;
 			message = event.getMessageContent().toLowerCase();
 			chan = event.getChannel();
-			if(event.getServer().isPresent()){servername = event.getServer().get().getName();}
-			else servername = null;
+			servername = event.getServer().isPresent() ? event.getServer().get().getName():null;
 			if(!event.getMessageAuthor().getDiscriminatedName().equals(botname)) {
-				if (!third.containsKey(chan)) {
-					third.put(chan, 0);
+				if (message.contains("diexit")) {//debug, exits program
+					chan.sendMessage("Going Offline...");
+					System.exit(0);
 				}
 				if (third.get(chan) > 0) {
 					message = event.getMessageContent();
 					thirdmanager();
-				} else {
-					if (message.length() < 3 && (message.equals("ok") || message.equals("k"))) {
-						event.getMessage().delete();
-					}
+				} else if(message.length() > 2){
 					String check = message.substring(0, 3);
 					if (check.equals("sh!")) {
 						readmanager();
-					} else if (message.contains("diexit")) {//debug, exits program
-						chan.sendMessage("Going Offline...");
-						System.exit(0);
 					} else if (sfw.contains(servername)) {
 						for (String e : message.split(" ")) {
 							if (bad.contains(e)) chan.sendMessage(bible());
 						}
 					}
+				} else if (message.equals("ok") || message.equals("k")) {
+					event.getMessage().delete();
 				}
 			}
 		});
@@ -98,7 +96,7 @@ public class Main {
 		switch(message) {
 		case "insult":
 			if(sfw.contains(servername)) {
-				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
+				chan.sendMessage(bible());
 				return;
 			}
 			if(pm == 'm') {
@@ -113,7 +111,7 @@ public class Main {
 				mt.mode = 1;
 				break;
 			}
-				pasted = ssat(); break;
+			pasted = ssat(); break;
 		case "allah" :
 			StringBuilder allah = new StringBuilder();
 			for(int i = 0; i < 2000; i++) allah.append(((char)65021));
@@ -126,41 +124,40 @@ public class Main {
 			for(int i = 0; i < 999; i++) space.append("\n");
 			space.append((char)8203);
 			pasted = space.toString();
-			space = null;
 			break;
 		case "plagueis" :
-			pasted = pastas[0]; break;
+			pasted = pastas.get(0); break;
 		case "sorry" :
-			pasted = pastas[1]; break;
+			pasted = pastas.get(1); break;
 		case "doctor" :
-			pasted = pastas[2]; break;
+			pasted = pastas.get(2); break;
 		case "kira" :
-			pasted = pastas[3]; break;
+			pasted = pastas.get(3); break;
 		case "pandemonika" :
 			if(sfw.contains(servername)) {
-				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
+				chan.sendMessage(bible());
 				return;
 			}
-			pasted = pastas[4]; break;
+			pasted = pastas.get(4); break;
 		case "navy":
-			pasted = pastas[5]; break;
+			pasted = pastas.get(5); break;
 		case "fitness":
-			pasted = pastas[6]; break;
+			pasted = pastas.get(6); break;
 		case "linux":
-			pasted = pastas[7]; break;
+			pasted = pastas.get(7); break;
 		case "furry":
 			if(sfw.contains(servername)) {
-				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
+				chan.sendMessage(bible());
 				return;
 			}
-			pasted = pastas[8]; break;
+			pasted = pastas.get(8); break;
 		case "freeman":
-			pasted = pastas[10]; break;
+			pasted = pastas.get(9); break;
 		case "pingme" :
-			pasted = event.getMessageAuthor().asUser().get().getMentionTag(); break;
+			pasted = event.getMessageAuthor().asUser().isPresent() ? event.getMessageAuthor().asUser().get().getMentionTag():null; break;
 		case "cum" :
 			if(sfw.contains(servername)) {
-				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
+				chan.sendMessage(bible());
 				return;
 			}
 			if(pm == 'm') {
@@ -180,13 +177,13 @@ public class Main {
 .setUrl("https://discord.com/api/oauth2/authorize?client_id=747632462191919204&permissions=3263489&redirect_uri=https%3A%2F%2Fdiscord.com%2Fapi%2Foauth2%2Fauthorize&scope=bot"))
 			.send(chan); return;
 		case "invite":
-			pasted = new InviteBuilder(event.getServerTextChannel().get())
+			pasted = event.getServerTextChannel().isPresent() ? new InviteBuilder(event.getServerTextChannel().get())
 			.setMaxAgeInSeconds(0)
 		    .setMaxUses(0)
-		    .create().join().getUrl().toString(); break;
+		    .create().join().getUrl().toString():null; break;
 		case "nsfwtest":
 			if(sfw.contains(servername)) {
-				chan.sendMessage("This is a SFW Discord server, what you requested could be NSFW");
+				chan.sendMessage(bible());
 				return;
 			}
 			chan.sendMessage("NSFW");
@@ -204,13 +201,15 @@ public class Main {
 			}
 			pasted = bible(); break;
 		}
-		if(pm == 'm') {
-			mt.chan = chan;
-			mt.spam = pasted;
-			threads.put(chan, new mt());
-			threads.get(chan).start();
+		if(pasted != null){
+			if(pm == 'm') {
+				mt.chan = chan;
+				mt.spam = pasted;
+				threads.put(chan, new mt());
+				threads.get(chan).start();
+			}
+			else chan.sendMessage(pasted);
 		}
-		else chan.sendMessage(pasted);
 	}
 	static String insult(){//Reddit insulter
 		String re = "";
@@ -242,11 +241,6 @@ public class Main {
 		}
 	}
 	static void thirdmanager() {
-		if(message.equals("diexit")){
-			chan.sendMessage("Going Offline...");
-			api.disconnect();
-			System.exit(0);
-		}
 		if(message.equals("taskend")|message.equals("sh!s")) {
 			chan.sendMessage("Task Ended");
 			third.put(chan, 0);
@@ -261,10 +255,12 @@ public class Main {
 		reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("deflist.txt"))));
 		try {
 			int line = dict.get(message);
+			StringBuilder output = new StringBuilder();
 			for(int i = 0; i < line; i++)reader.readLine();
 			for(String e:reader.readLine().split("#")){
-				chan.sendMessage(e);
+				output.append(e).append("\n");
 			}
+			new MessageBuilder().setEmbed(new EmbedBuilder().setTitle(message).setDescription(output.toString())).send(chan);
 			reader.close();
 		}catch(Exception NullPointerException) {chan.sendMessage("Word not found");}
 	}
@@ -312,21 +308,22 @@ class mt extends Thread{
 	public void run() {
 		String sp = spam;
 		Messageable ch = chan;
+		boolean stop = false;
 		try {
 			switch(mode) {
 			case 0:
-				while(true) {
+				while(!stop) {
 					ch.sendMessage(sp).join();
 					TimeUnit.SECONDS.sleep(1);
 				}
 			case 1:
-				while(true) {
+				while(!stop) {
 					ch.sendMessage(Main.insult()).join();
 					TimeUnit.SECONDS.sleep(1);
 				}
 			case 2:
 				BufferedReader cum = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("cum.txt"))));
-				while(true) {
+				while(!stop) {
 					String c2 = cum.readLine();
 					if(c2 == null)cum = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("cum.txt"))));
 					ch.sendMessage(c2).join();
@@ -334,20 +331,25 @@ class mt extends Thread{
 				}
 			case 3:
 				BufferedReader bee = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("bee.txt"))));
-				while(true) {
+				while(!stop) {
 					String c2 = bee.readLine();
 					if(c2 == null)return;
 					ch.sendMessage(c2).join();
 					TimeUnit.SECONDS.sleep(1);
 				}
 			case 4:
-				while(true) {
+				while(!stop) {
 					ch.sendMessage(Main.bible()).join();
 					TimeUnit.SECONDS.sleep(1);
 				}
+			case 5:
+				while(!stop) {
+					ch.sendMessage(Main.ssat()).join();
+					TimeUnit.SECONDS.sleep(1);
+				}
 			}
-		} catch (InterruptedException e) {
-			ch.sendMessage("Spam Stopped");
-		} catch (IOException ignored) {}
+		} catch (Exception ignored) {}
+		chan.sendMessage("Spam Stopped");
+		stop = true;
 	}
 }
