@@ -31,6 +31,7 @@ public class Main {
 	static MessageCreateEvent event;
 	static String botname = "";
 	static DiscordApi api;
+	static User target;
 
 	static ArrayList<String> pastas = new ArrayList<>();
 	static HashSet<String> bad = new HashSet<>();
@@ -52,6 +53,7 @@ public class Main {
 		botname = reader.readLine();
 		reader.close();
 		listener();
+		
 	}
 	static void listener(){
 		api.addMessageCreateListener(eve -> {
@@ -251,7 +253,8 @@ public class Main {
 		switch(third.get(event.getChannel())) {
 		case 1:exp();break;
 		case 2:dictionary();break;
-		case 3:dm();break;
+		case 3:dmlist();break;
+		case 4:target.sendMessage(message);break;
 		}
 	}
 	static void dictionary() {
@@ -308,23 +311,20 @@ public class Main {
 		} catch (IOException ignored) {}
 		return re;
 	}
-	static void dm(){
+	static void dmlist(){
 		String me = message.split(" ")[0];
-		User target = null;
 		for(Server e:api.getServers()){
-			for(User ee:e.getMembers()){
-				System.out.println(ee.getDiscriminatedName());
-			}
-			target = e.getMemberByDiscriminatedName(me).isPresent() ? e.getMemberByDiscriminatedName(me).get():null;
+			target = e.getMemberByDiscriminatedNameIgnoreCase(me).isPresent() ? e.getMemberByDiscriminatedNameIgnoreCase(me).get():null;
+			System.out.println(target);
 			if(target != null)break;
 		}
-		if(target != null){
-			StringBuilder output = new StringBuilder();
-			String[] mess = message.split(" ");
-			for(int i = 1; i < mess.length-1; i++) {
-				output.append(mess[i]);
-			}
-			target.sendMessage(output.toString());
+		if(target == null) {
+			chan.sendMessage("User Not Found");
+		}
+		else{
+			chan.sendMessage("User Identified");
+			third.put(chan, 4);
+
 		}
 	}
 }
