@@ -17,8 +17,9 @@ import org.javacord.api.entity.server.Server;
 import org.javacord.api.entity.server.invite.InviteBuilder;
 import org.javacord.api.entity.user.User;
 import org.javacord.api.event.message.MessageCreateEvent;
+import org.javacord.api.listener.message.MessageCreateListener;
+import org.javacord.api.util.event.ListenerManager;
 import org.mariuszgromada.math.mxparser.Expression;
-//fix multithreading!!!
 public class Main {
 	static BufferedReader reader;
 	static ClassLoader load = Thread.currentThread().getContextClassLoader();
@@ -32,6 +33,7 @@ public class Main {
 	static String botname = "";
 	static DiscordApi api;
 	static User target;
+	static ListenerManager<MessageCreateListener> dml;
 
 	static ArrayList<String> pastas = new ArrayList<>();
 	static HashSet<String> bad = new HashSet<>();
@@ -93,6 +95,52 @@ public class Main {
 		case 'm':paste('m'); break;
 		case 's':stop(chan); break;
 		case 'x':special(); break;
+		}
+	}
+	static void special() {
+		switch(message) {
+			case "math":
+				new MessageBuilder().setEmbed(new EmbedBuilder()
+						.setTitle("Math brought to you by mXparser, from MathParser.org")
+						.setDescription("Read the documentation here")
+						.setUrl("https://github.com/mariuszgromada/MathParser.org-mXparser#built-in-tokens")
+				).send(chan);
+				third.put(chan, 1); break;
+			case "dict":
+				new MessageBuilder().setEmbed(new EmbedBuilder()
+						.setTitle("Dictionary Brought to you by OPTED")
+						.setDescription("Please don't use obvious plurals\n(Cacti still works)")
+				).send(chan);
+				third.put(chan, 2); break;
+			case "dm":
+				new MessageBuilder().setEmbed(new EmbedBuilder()
+						.setTitle("DM anyone you want")
+						.setDescription("Use at your own risk")
+				).send(chan);
+				third.put(chan, 3); break;
+		}
+	}
+	static void thirdmanager() {
+		if(message.equals("taskend")|message.equals("sh!s")) {
+			if(third.get(chan) == 4){
+				dml.remove();
+				target = null;
+			}
+			chan.sendMessage("Task Ended");
+			third.put(chan, 0);
+			return;
+		}
+		switch(third.get(event.getChannel())) {
+			case 1:exp();break;
+			case 2:dictionary();break;
+			case 3:dmlist();break;
+			case 4:target.sendMessage(message);break;
+		}
+	}
+	static void stop(Messageable stchan) {//stops multithreading
+		if(threads.containsKey(stchan)){
+			threads.get(stchan).interrupt();
+			threads.remove(stchan);
 		}
 	}
 	static void paste(char pm){
@@ -238,25 +286,6 @@ public class Main {
 		} catch (IOException ignored) {}
 		return re;
 	}
-	static void stop(Messageable stchan) {//stops multithreading
-		if(threads.containsKey(stchan)){
-			threads.get(stchan).interrupt();
-			threads.remove(stchan);
-		}
-	}
-	static void thirdmanager() {
-		if(message.equals("taskend")|message.equals("sh!s")) {
-			chan.sendMessage("Task Ended");
-			third.put(chan, 0);
-			return;
-		}
-		switch(third.get(event.getChannel())) {
-		case 1:exp();break;
-		case 2:dictionary();break;
-		case 3:dmlist();break;
-		case 4:target.sendMessage(message);break;
-		}
-	}
 	static void dictionary() {
 		reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(load.getResourceAsStream("deflist.txt"))));
 		try {
@@ -275,29 +304,6 @@ public class Main {
 			chan.sendMessage(Double.toString(new Expression(message).calculate()));
 		}catch(Exception e) {chan.sendMessage("Syntax invalid");}
 	}
-	static void special() {
-		switch(message) {
-		case "math":
-			new MessageBuilder().setEmbed(new EmbedBuilder()
-					.setTitle("Math brought to you by mXparser, from MathParser.org")
-					.setDescription("Read the documentation here")
-					.setUrl("https://github.com/mariuszgromada/MathParser.org-mXparser#built-in-tokens")
-			).send(chan);
-			third.put(chan, 1); break;
-		case "dict":
-			new MessageBuilder().setEmbed(new EmbedBuilder()
-					.setTitle("Dictionary Brought to you by OPTED")
-					.setDescription("Please don't use obvious plurals\n(Cacti still works)")
-			).send(chan);
-			third.put(chan, 2); break;
-		case "dm":
-			new MessageBuilder().setEmbed(new EmbedBuilder()
-					.setTitle("DM anyone you want")
-					.setDescription("Use at your own risk")
-			).send(chan);
-			third.put(chan, 3); break;
-		}
-	}
 	static String ssat() {
 		String re = "";
 		int n = (int) (Math.random()*2001);
@@ -312,10 +318,9 @@ public class Main {
 		return re;
 	}
 	static void dmlist(){
-		String me = message.split(" ")[0];
+		String me = message;
 		for(Server e:api.getServers()){
-			target = e.getMemberByDiscriminatedNameIgnoreCase(me).isPresent() ? e.getMemberByDiscriminatedNameIgnoreCase(me).get():null;
-			System.out.println(target);
+			target = e.getMemberByDiscriminatedName(me).isPresent() ? e.getMemberByDiscriminatedName(me).get():null;
 			if(target != null)break;
 		}
 		if(target == null) {
@@ -324,7 +329,9 @@ public class Main {
 		else{
 			chan.sendMessage("User Identified");
 			third.put(chan, 4);
-
+			dml = target.addMessageCreateListener(dm ->
+				new MessageBuilder().setEmbed(new EmbedBuilder().setDescription(dm
+						.getMessageContent()).setAuthor(dm.getMessageAuthor())).send(chan));
 		}
 	}
 }
