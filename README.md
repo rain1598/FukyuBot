@@ -48,18 +48,20 @@ p => pastes a copypasta
  - invite - creates invite for the current channel of the current server
  - nsfwtest - checks if the server is nsfw or not
  - bible - pastes a bible verse (KJV)
+ - ssat - prints ssat word and definition
 
 m => spams a copypasta every second
 
  - (all of type p have been implemented)
  - insult - f!p insult but it spams randomized
- - cum - writes the lyrics to Welcome To The Cum Zone and Heir To The Cum Throne line by line
+ - cum - writes the lyrics to the Cum Zone trilogy line by line
  - stop - alternative way to stop spam
  - bee - spams the entire bee movie script
  
 x => special functions
 
  - math - does math using mXparser (for more info and help, please visit https://github.com/mariuszgromada/MathParser.org-mXparser#built-in-tokens)
+ - dict - browses the dictionary
 
 s => stops spam
 
