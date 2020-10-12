@@ -55,13 +55,6 @@ public class Main {
 		botname = reader.readLine();
 		reader.close();
 		listener();
-
-		for(Server e:api.getServers()){
-			for(User ee:e.getMembers()){
-				System.out.println(ee.getIdAsString());
-			}
-		}
-
 	}
 	static void listener(){
 		api.addMessageCreateListener(eve -> {
